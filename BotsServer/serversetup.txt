@@ -1,0 +1,8 @@
+Main start alle servers
+eerste packet gaat via 11004 set account in lobbylist met relaynumb zet num naar -1 wanneer player dced verwijder uit lobbylist
+daarna een relaypacket 11013
+verbinding 11002 set num wanneer player dcd zet num naar -1 wanneer num -1 niet displayen in lobby
+open botclass add to lobby (update room botclasses)
+nieuwe room update room list in lobby set room thread naar botclass
+botclass cache alle stats items tijden in botclass room thread link
+
