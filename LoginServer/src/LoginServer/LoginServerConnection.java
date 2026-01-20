@@ -6,23 +6,16 @@
 package LoginServer;
 
 //import java.math.*;
-import java.io.BufferedReader;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.OutputStream;
-import java.io.PrintWriter;
 import java.math.BigInteger;
 import java.net.Socket;
 import java.net.SocketAddress;
-import java.net.URL;
-import java.net.URLConnection;
 import java.nio.ByteBuffer;
 //import java.security.MessageDigest;
 //import java.security.NoSuchAlgorithmException;
 import java.sql.ResultSet;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 
 /**
  * The LoginServerConnection handles individual client connections to the chat
@@ -32,7 +25,6 @@ public class LoginServerConnection extends Thread {
 	protected Socket socket;
 	protected InputStream socketIn;
 	protected OutputStream socketOut;
-	protected PrintWriter socketOut2;
 	protected LoginServer server;
 	public String user;
 	public String pass;
@@ -43,11 +35,6 @@ public class LoginServerConnection extends Thread {
 	public int LOGIN_ALLOG;
 	public int LOGIN_RESULT;
 	public String LOGIN_RESULTSTR;
-	private URL URLObj;
-	private URLConnection connect;
-	private String mail;
-
-
 	/*
 	 * Creates a new instance of LoginServerConnection.
 	 */
@@ -75,7 +62,6 @@ public class LoginServerConnection extends Thread {
 	public void CheckUser(String user, String pass) {
 
 		try {
-//			boolean properlogin=phplogin();
 			int bantime = -1;
 			String banstime = "0";
 			String[] user2 = new String[1];
@@ -95,7 +81,7 @@ public class LoginServerConnection extends Thread {
 				this.LOGIN_ALLOG = rs.getInt("online");
 				this.LOGIN_RESULT = 0;
 			}
-			boolean properlogin = true;//this.LOGIN_PASSWORD.equals(this.pass);
+			boolean properlogin = this.LOGIN_PASSWORD != null && this.LOGIN_PASSWORD.equals(this.pass);
 //			else if(properlogin){
 //				user2 = new String[11];
 //				user2[0] = this.user;
@@ -280,78 +266,6 @@ public class LoginServerConnection extends Thread {
 		} catch (Exception e) {
 			debug("Error (updateAccount) : " + e.getMessage());
 		}
-	}
-	
-	protected String[] openpage(String page)
-	{
-		List<String> linelist = new ArrayList<String>();
-		String[] lines=null;
-		try {
-            // Establish a URL and open a connection to it. Set it to output mode.
-            URLObj = new URL(page);
-            connect = URLObj.openConnection();
-            connect.setDoOutput(true);	
-        }
-		catch (Exception ex) {
-            System.out.println("An exception occurred. " + ex.getMessage());
-		}
-		
-		try {
-			
-            BufferedReader reader = new BufferedReader(new InputStreamReader(connect.getInputStream()));
-            String lineRead = "";
-			
-            while ((lineRead = reader.readLine()) != null) {
-            	linelist.add(lineRead);
-            }
-		}
-		catch(Exception e){
-			System.out.println("An exception occurred. " + e.getMessage());
-		}
-		lines=new String[linelist.size()];
-		lines=linelist.toArray(lines);
-		return lines;
-	}
-	
-	public boolean phplogin()
-	{
-		boolean value=false;
-		java.lang.System.setProperty("https.protocols", "TLSv1,TLSv1.1,TLSv1.2");
-		try {
-            // Establish a URL and open a connection to it. Set it to output mode.
-            URLObj = new URL("https://bouteagle.ace-games.com/serverassg.php?assignment=1&username="+this.user+"&pass="+this.pass);
-            connect = URLObj.openConnection();
-            connect.setDoOutput(true);	
-        }
-        catch (Exception ex) {
-            System.out.println("An exception occurred. " + ex.getMessage());
-            System.exit(1);
-        }
-		
-		
-        try {
-			
-            // Now establish a buffered reader to read the URLConnection's input stream.
-            BufferedReader reader = new BufferedReader(new InputStreamReader(connect.getInputStream()));
-            String lineRead = "";
-			
-            // Read all available lines of data from the URL and print them to screen.
-            while ((lineRead = reader.readLine()) != null) {
-                System.out.println(lineRead);
-                String[] liner=lineRead.split(" ");
-    			if(liner[0].equals("login_succes")){
-    				value=true;
-    				this.mail=liner[1];
-    			}
-    			else if(liner[0].equals("login_failed"))
-    				value=false;
-            }
-            reader.close();
-        }
-        catch (Exception ex) {
-            System.out.println("There was an error reading or writing to the URL: " + ex.getMessage());
-        }
-        return value;
 	}
 
 	/**
