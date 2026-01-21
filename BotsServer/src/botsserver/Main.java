@@ -15,7 +15,7 @@ public class Main {
     public static String[] arg = null;
     public static int ChannelPort = 11002;
     public static int RelayPort = 11013;
-    public static int RelayTCPPort = 11004;
+    public static int RelayTCPPort = 11104;
     public static int RoomServerPort = 11011;
     protected static byte[] encrypt = {(byte)0x89,(byte)0x81,(byte)0x7A,(byte)0x72,(byte)0xA9,(byte)0xA1,(byte)0x99,(byte)0x91,(byte)0xC9,(byte)0xC1,(byte)0xB9,(byte)0xB1,(byte)0xE9,(byte)0xE1,(byte)0xD9,(byte)0xD1,
 		(byte)0x09,(byte)0x01,(byte)0xF9,(byte)0xF1,(byte)0x29,(byte)0x21,(byte)0x19,(byte)0x11,(byte)0x4F,(byte)0x47,(byte)0x3F,(byte)0x37,(byte)0x6F,(byte)0x67,(byte)0x5F,(byte)0x57,(byte)0x8E,(byte)0x86,(byte)0x7F,(byte)0x77,

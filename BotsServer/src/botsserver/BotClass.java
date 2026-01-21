@@ -134,7 +134,7 @@ public class BotClass {
         		}
         	}
         	rs.close();
-        }catch (Exception e){debug("11004: "+e);}
+        }catch (Exception e){debug("11104: "+e);}
         lobbynum=num;
         arr = new String[]{""+num, channel.Channelname, account};
         sql.psupdate("UPDATE `lobbylist` SET `num`=?, Channel=? WHERE `username`=?", arr);
