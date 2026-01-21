@@ -205,6 +205,7 @@ public class LoginServerConnection extends Thread {
 				this.socketOut.write(encrypt(LoginServer.LOGIN_SUCCESSBYTE));// ,"ISO8859-1"));
 				this.socketOut.flush();
 				this.LOGIN_RESULTSTR = "Success";
+				this.socket.shutdownOutput();
 				this.socket.close();
 				break;
 			case 1:
