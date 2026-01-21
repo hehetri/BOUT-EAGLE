@@ -5,7 +5,7 @@ import java.net.Socket;
 import java.lang.management.ManagementFactory;
 
 public class Main {
-    public static SQLDatabase sql = new SQLDatabase("BoutEagle");
+    public static SQLDatabase sql = new SQLDatabase("bout_evolution");
     public static ChannelServer channelServer;
     public static RelayTCP Relaytcp;
     public static RoomServer roomserver;

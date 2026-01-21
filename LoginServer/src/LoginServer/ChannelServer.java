@@ -4,6 +4,7 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.sql.ResultSet;
+import java.util.Arrays;
 
 class ChannelServer {
 	
@@ -39,9 +40,9 @@ class ChannelServer {
 
 		try {
 			ResultSet rs = Main.sql.doquery("SELECT * FROM bout_channels WHERE status=1 and server='"+channelnum+"' LIMIT 12");
-			if (channel_i != 1) {
-				channel_i = 0;
-			}
+			channel_i = 0;
+			Arrays.fill(channel_detail, null);
+			Arrays.fill(channel_ip, null);
 			String nullbyte = new String(NULLBYTE, "ISO8859-1");
 
 			while (rs.next()) {
