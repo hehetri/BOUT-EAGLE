@@ -19,6 +19,7 @@ class ChannelServer {
 			(byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00,
 			(byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00 };
 	public static final byte[] NULLBYTE = { (byte) 0x00 };
+	public static final int CHANNEL_PORT = 11002;
 
 	public static String[] channel_detail = new String[12];
 	public static int[] channel_id = new int[12];
@@ -146,7 +147,7 @@ class ChannelServer {
 				for (int i = 0; i < 4; i++)
 					if(channel_ip[i]!=null){
 						String[] aip=channel_ip[i].split("\\.");
-						byte[] bitarr={(byte) 0x00, (byte) 0x00,(byte) Integer.parseInt(aip[0]), (byte) Integer.parseInt(aip[1]), (byte) Integer.parseInt(aip[2]), (byte) Integer.parseInt(aip[3])};
+						byte[] bitarr={(byte) (CHANNEL_PORT & 0xFF), (byte) ((CHANNEL_PORT >> 8) & 0xFF),(byte) Integer.parseInt(aip[0]), (byte) Integer.parseInt(aip[1]), (byte) Integer.parseInt(aip[2]), (byte) Integer.parseInt(aip[3])};
 						channel_packet += new String(bitarr, "ISO8859-1");
 					}
 					else
