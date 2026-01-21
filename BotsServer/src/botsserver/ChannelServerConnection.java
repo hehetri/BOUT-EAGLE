@@ -827,12 +827,11 @@ public class ChannelServerConnection extends Thread{
 	        	bot.RemoveRoom(bot.room);
 	    	bot.room=null;
 	    }catch (Exception e){debug("Error occured while removing user from room: "+e);}
-    	try{
+	    try{
 		    if (bot != null) {
 		    	bot.closeThread();
 		    	bot=null;
 		    }
-		    server=null;
 		    sql=null;
     	}catch (Exception e){debug("Error while freeing resources: "+e);}
 	    try {

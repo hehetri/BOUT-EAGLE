@@ -3,6 +3,8 @@ package botsserver;
 import java.sql.ResultSet;
 import java.util.Calendar;
 import java.util.Map;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
@@ -41,6 +43,7 @@ public class Room {
 	protected ScheduledFuture<?> clearstage = null;
 	protected ScheduledFuture<?> timeover = null;
 	protected ScheduledFuture<?> PvpDrop = null;
+	private static final ScheduledExecutorService ROOM_EXECUTOR = Executors.newScheduledThreadPool(4);
 	
 	public Room(BotClass bot, String roomname, String password, int mode, String ip, int roomnum)
 	{
@@ -567,7 +570,7 @@ public class Room {
     	value = new String[]{"1", "-1",reason, bot[id].account};
 		Main.sql.psupdate("UPDATE `bout_users` SET `banned`=?, `bantime`=?, `banStime`=now(), `banreason`=? WHERE `username`=?", value);
 		bot[id].channel.closecon();
-    	clearstage=owner.executorp.schedule(SectorClear(new int[]{0,0,0,0,0,0,0,0},new boolean[] {false,false,false,false,false,false,false,false},bot,1,1,MobKill,PlayerKill,new int[]{0,0,0,0,0,0,0,0},new int[]{0,0,0,0,0,0,0,0}), 5, TimeUnit.SECONDS);
+    	clearstage=ROOM_EXECUTOR.schedule(SectorClear(new int[]{0,0,0,0,0,0,0,0},new boolean[] {false,false,false,false,false,false,false,false},bot,1,1,MobKill,PlayerKill,new int[]{0,0,0,0,0,0,0,0},new int[]{0,0,0,0,0,0,0,0}), 5, TimeUnit.SECONDS);
     }
     
     public void EndRoom(int[] exp, int[] gigas, int coins, int[] winner, boolean timeover)
@@ -633,7 +636,7 @@ public class Room {
         	String [] value = {""+MapValues[1], owner.botname, playerlist, ""+time, ""+MobKill[9]};
         	Main.sql.psupdate("INSERT INTO `sector_log` (`level`, `roommaster`, `roomplayers`, `time`, `kills`, `date`)VALUES (?, ?, ?, ?, ?, now())", value);
         }
-        clearstage=owner.executorp.schedule(SectorClear(winner,leveledup,bot,1,1,MobKill,PlayerKill,points,exp), 5, TimeUnit.SECONDS);
+        clearstage=ROOM_EXECUTOR.schedule(SectorClear(winner,leveledup,bot,1,1,MobKill,PlayerKill,points,exp), 5, TimeUnit.SECONDS);
     }
     
     private static Runnable TimeOver(final Room room) {
@@ -791,7 +794,7 @@ public class Room {
     		debug("PvpDropRerun skipped: room owner missing");
     		return;
     	}
-    	PvpDrop=owner.executorp.schedule(PvpDrops(this, bot), (int)(Math.random()*15+15), TimeUnit.SECONDS);
+    	PvpDrop=ROOM_EXECUTOR.schedule(PvpDrops(this, bot), (int)(Math.random()*15+15), TimeUnit.SECONDS);
     }
 
     public void waitroom(boolean statupdate)
@@ -1041,7 +1044,7 @@ public class Room {
     		Moblist[0]=mobwork;
     		Moblist[1]=mobtemp[1];
     		Mobkilled=Moblist[0].clone();
-    		timeover=owner.executorp.schedule(TimeOver(this), MapValues[5], TimeUnit.MINUTES);
+    		timeover=ROOM_EXECUTOR.schedule(TimeOver(this), MapValues[5], TimeUnit.MINUTES);
     	}
     	if (roommode!=2)
     		PvpDropRerun();
