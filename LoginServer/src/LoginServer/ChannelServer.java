@@ -19,7 +19,7 @@ class ChannelServer {
 			(byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00,
 			(byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00 };
 	public static final byte[] NULLBYTE = { (byte) 0x00 };
-	public static final int CHANNEL_PORT = 11002;
+public static final int CHANNEL_PORT = 11102;
 
 	public static String[] channel_detail = new String[12];
 	public static int[] channel_id = new int[12];

@@ -13,7 +13,7 @@ public class Main {
     public static RelayServer relayserver;
     protected static String ChannelName = "BoutEagle";
     public static String[] arg = null;
-    public static int ChannelPort = 11002;
+    public static int ChannelPort = 11102;
     public static int RelayPort = 11013;
     public static int RelayTCPPort = 11104;
     public static int RoomServerPort = 11011;

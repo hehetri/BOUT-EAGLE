@@ -4,7 +4,7 @@ Abra as portas abaixo no firewall/roteador para o servidor funcionar.
 
 ## TCP
 - **11000** — LoginServer (LoginServer/src/LoginServer/Main.java)
-- **11002** — BotsServer ChannelServer (BotsServer/src/botsserver/Main.java)
+- **11102** — BotsServer ChannelServer (BotsServer/src/botsserver/Main.java)
 - **11104** — BotsServer RelayTCP (BotsServer/src/botsserver/Main.java)
 
 ## UDP
