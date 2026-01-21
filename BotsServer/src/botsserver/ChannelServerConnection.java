@@ -772,6 +772,8 @@ public class ChannelServerConnection extends Thread{
             for (int i = 0; i < 4; i++)
             {
                 codePoint = this.socketIn.read();
+                if (codePoint < 0)
+                    return null;
                 buffer.put((byte)codePoint);//(byte)Main.decrypt[codePoint & 0xFF]);
             }
             int plen = bytetoint(buffer.array(), 2);
@@ -786,12 +788,16 @@ public class ChannelServerConnection extends Thread{
                 for (int i = 0; i < plen; i++)
                 {
                     codePoint = this.socketIn.read();
+                    if (codePoint < 0)
+                        return null;
                     buffer.put((byte)codePoint);//(byte)Main.decrypt[codePoint & 0xFF]);
                 }
             }
         } catch (Exception e)
         {
-            debug("Error (read): " + e);
+            if (socket == null || !socket.isClosed()) {
+                debug("Error (read): " + e);
+            }
             return null;
         }
 		return buffer.array();
