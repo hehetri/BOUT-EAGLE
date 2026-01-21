@@ -39,13 +39,16 @@ class ChannelServer {
 	protected static void getChannels(int channelnum) {
 
 		try {
-			ResultSet rs = Main.sql.doquery("SELECT * FROM bout_channels WHERE status=1 and server='"+channelnum+"' LIMIT 12");
+			ResultSet rs = Main.sql.doquery("SELECT * FROM bout_channels WHERE status=1 and server='"
+					+ channelnum + "' LIMIT 12");
+			boolean found = false;
 			channel_i = 0;
 			Arrays.fill(channel_detail, null);
 			Arrays.fill(channel_ip, null);
 			String nullbyte = new String(NULLBYTE, "ISO8859-1");
 
 			while (rs.next()) {
+				found = true;
 				channel_id[channel_i] = rs.getInt("id");
 				channel_name[channel_i] = rs.getString("name");
 				channel_ip[channel_i] = rs.getString("channelip");
@@ -70,6 +73,41 @@ class ChannelServer {
 					channel_detail[channel_i] += nullbyte;
 
 				channel_i++;
+			}
+			rs.close();
+
+			if (!found) {
+				channel_i = 0;
+				Arrays.fill(channel_detail, null);
+				Arrays.fill(channel_ip, null);
+				rs = Main.sql.doquery("SELECT * FROM bout_channels WHERE status=1 LIMIT 12");
+				while (rs.next()) {
+					channel_id[channel_i] = rs.getInt("id");
+					channel_name[channel_i] = rs.getString("name");
+					channel_ip[channel_i] = rs.getString("channelip");
+					channel_namelength[channel_i] = channel_name[channel_i].length();
+
+					channel_min[channel_i] = rs.getInt("minlevel");
+					byte[] MINBYTE = { (byte) channel_min[channel_i] };
+
+					channel_max[channel_i] = rs.getInt("maxlevel");
+					byte[] MAXBYTE = { (byte) channel_max[channel_i] };
+
+					channel_players[channel_i] = rs.getInt("players");
+					int b1 = channel_players[channel_i] & 0xff;
+					int b2 = (channel_players[channel_i] >> 8) & 0xff;
+					byte[] PLAYERSBYTE = { (byte) b1, (byte) b2 };
+					channel_detail[channel_i] = new String(PLAYERSBYTE, "ISO8859-1")
+							+ new String(MINBYTE, "ISO8859-1")
+							+ new String(MAXBYTE, "ISO8859-1")
+							+ channel_name[channel_i];
+
+					for (int i = 0; i < 22 - channel_namelength[channel_i]; i++)
+						channel_detail[channel_i] += nullbyte;
+
+					channel_i++;
+				}
+				rs.close();
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
