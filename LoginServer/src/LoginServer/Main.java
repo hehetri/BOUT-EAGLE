@@ -68,7 +68,7 @@ public class Main {
 	/**
 	 * Create SQLDatabase Object
 	 */
-	public static SQLDatabase sql = new SQLDatabase("Server");
+	public static SQLDatabase sql = new SQLDatabase("bout_evolution");
 
 	/**
 	 * Write the message to the GUI.
