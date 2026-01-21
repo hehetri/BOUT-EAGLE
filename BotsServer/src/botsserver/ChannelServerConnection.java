@@ -33,7 +33,8 @@ public class ChannelServerConnection extends Thread{
     
     private void debug(String msg)
     {
-    	Main.debug("ChannelServer[11002]"+msg);
+    	String portLabel = server != null ? Integer.toString(server.port) : "unknown";
+    	Main.debug("ChannelServer[" + portLabel + "] " + msg);
     }
     
     protected int isbanned(String account)
@@ -819,7 +820,7 @@ public class ChannelServerConnection extends Thread{
     protected void closecon()
     {
     	try{
-    		if (bot.finalize)
+    		if (bot == null || bot.finalize)
     			return;
     		bot.finalize=true;
 	    	if (bot.room!=null && bot.room.Exit(bot.roomnum, false))
@@ -827,8 +828,10 @@ public class ChannelServerConnection extends Thread{
 	    	bot.room=null;
 	    }catch (Exception e){debug("Error occured while removing user from room: "+e);}
     	try{
-		    bot.closeThread();
-		    bot=null;
+		    if (bot != null) {
+		    	bot.closeThread();
+		    	bot=null;
+		    }
 		    server=null;
 		    sql=null;
     	}catch (Exception e){debug("Error while freeing resources: "+e);}
