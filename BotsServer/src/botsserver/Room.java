@@ -1098,7 +1098,7 @@ public class Room {
 		packet.addHeader((byte) 0xF3, (byte) 0x2E);
         packet.addPacketHead((byte) 0x01, (byte) 0x00);
         packet.addInt(roomnum, 2, false);
-        packet.addInt(this.map[0], 2, false);
+        packet.addInt(this.map[1], 2, false);
         packet.addByte2((byte) 0x03, (byte) 0x00);// soort van beginpositie mod 0x50 en ^ is spectator
         packet.addByte2((byte) 0x01, (byte) 0x00);
         packet.addByte2((byte) 0x00, (byte) 0x00);
