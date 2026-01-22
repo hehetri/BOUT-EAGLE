@@ -556,12 +556,15 @@ public class Room {
         }
     }
     
-    protected void hackdetected(int id, String reason) {
-    	
-
+	protected void hackdetected(int id, String reason) {
 		BotClass owner = getRoomOwnerBot();
 		if (owner == null) {
 			debug("hackdetected skipped: room owner missing");
+			return;
+		}
+		BotClass target = (id >= 0 && id < bot.length) ? bot[id] : null;
+		if (target == null || target.channel == null || target.channel.socket == null || target.channel.socket.isClosed()) {
+			debug("hackdetected skipped: target disconnected (" + reason + ")");
 			return;
 		}
     	for (int i = 0; i<8; i++)
@@ -587,9 +590,9 @@ public class Room {
     	int time = (int)TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis() - this.starttime);
     	String [] value = {""+MapValues[1], owner.botname, playerlist, ""+time, ""+MobKill[9]};
     	Main.sql.psupdate("INSERT INTO `sector_log` (`level`, `roommaster`, `roomplayers`, `time`, `kills`, `date`)VALUES (?, ?, ?, ?, ?, now())", value);
-    	value = new String[]{"1", "-1",reason, bot[id].account};
+    	value = new String[]{"1", "-1",reason, target.account};
 		Main.sql.psupdate("UPDATE `bout_users` SET `banned`=?, `bantime`=?, `banStime`=now(), `banreason`=? WHERE `username`=?", value);
-		bot[id].channel.closecon();
+		target.channel.closecon();
     	clearstage=ROOM_EXECUTOR.schedule(SectorClear(new int[]{0,0,0,0,0,0,0,0},new boolean[] {false,false,false,false,false,false,false,false},bot,1,1,MobKill,PlayerKill,new int[]{0,0,0,0,0,0,0,0},new int[]{0,0,0,0,0,0,0,0}), 5, TimeUnit.SECONDS);
     }
     
