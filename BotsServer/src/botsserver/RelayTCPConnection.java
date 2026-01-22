@@ -30,7 +30,7 @@ public class RelayTCPConnection extends Thread {
     
     public void debug(String msg)
     {
-    	Main.debug("RelayIdentifier[11004]: "+msg);
+    	Main.debug("RelayIdentifier[11104]: "+msg);
     }
     
     private static Runnable autocheck(final RelayTCPConnection thread, final OutputStream socketOut) {

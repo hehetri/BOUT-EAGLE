@@ -5,7 +5,7 @@ import java.net.*;
 public class RelayTCP extends Thread
 {
     protected ServerSocket startrelayServer;
-    protected int port = 11004;
+    protected int port = 11104;
     private boolean listening = false;
     private Lobby lobby;
     

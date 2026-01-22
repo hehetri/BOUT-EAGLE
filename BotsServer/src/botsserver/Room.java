@@ -3,6 +3,8 @@ package botsserver;
 import java.sql.ResultSet;
 import java.util.Calendar;
 import java.util.Map;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
@@ -41,6 +43,7 @@ public class Room {
 	protected ScheduledFuture<?> clearstage = null;
 	protected ScheduledFuture<?> timeover = null;
 	protected ScheduledFuture<?> PvpDrop = null;
+	private static final ScheduledExecutorService ROOM_EXECUTOR = Executors.newScheduledThreadPool(4);
 	
 	public Room(BotClass bot, String roomname, String password, int mode, String ip, int roomnum)
 	{
@@ -69,14 +72,27 @@ public class Room {
 	{
 		Main.debug("RoomThread: "+msg);
 	}
+
+	private BotClass getRoomOwnerBot()
+	{
+		if (roomowner < 0 || roomowner >= bot.length) {
+			return null;
+		}
+		return bot[roomowner];
+	}
 	
 	public void RoomPacket()
 	{
+		BotClass owner = getRoomOwnerBot();
+		if (owner == null) {
+			debug("RoomPacket skipped: room owner missing");
+			return;
+		}
         packet.addHeader((byte) 0xEE, (byte) 0x2E);
         packet.addByte2((byte) 0x01, (byte) 0x00);
         packet.addInt(roomnum+1, 2, false);
         packet.addByte4((byte) this.ips[0][0], (byte) this.ips[0][1], (byte) this.ips[0][2], (byte) this.ips[0][3]);
-        bot[roomowner].send(packet,false);
+        owner.send(packet,false);
 	}
 	
 	public void SendMessage(boolean all, int num, String message, int color)
@@ -100,23 +116,52 @@ public class Room {
 	{
 		if (this.roomowner!=num)
 			return;
+		BotClass owner = getRoomOwnerBot();
+		if (owner == null) {
+			debug("ChangePass skipped: room owner missing");
+			return;
+		}
 		this.password=password;
-		bot[roomowner].PopUp(false, "Room password succesfully changed to "+this.password +"!");
+		owner.PopUp(false, "Room password succesfully changed to "+this.password +"!");
 	}
 	
 	public void setMap(int map, int num)
 	{
 		if (this.roomowner!=num)
 			return;
-		if (this.roommode!=2){
-    		if(map==0)
-    			this.map[0] = (int)(Math.random()*5)+1;
-    		else
-    			this.map[0] = map-1;}
-    	else
-    		this.map[0] = map;
-    	this.map[1]=map;
-    	MapPacket();
+		BotClass owner = getRoomOwnerBot();
+		if (owner == null) {
+			debug("setMap skipped: room owner missing");
+			return;
+		}
+		int mapIndex = -1;
+		int mapId = map;
+		int mapCount = owner.lobby.standard.mapvalues.length;
+		if (this.roommode != 2) {
+			if (map - 1 >= 0 && map - 1 < mapCount && owner.lobby.standard.mapvalues[map - 1] != null) {
+				mapIndex = map - 1;
+				mapId = map;
+			} else if (map >= 0 && map < mapCount && owner.lobby.standard.mapvalues[map] != null) {
+				mapIndex = map;
+				mapId = map + 1;
+			}
+		} else {
+			if (map - 1 >= 0 && map - 1 < mapCount && owner.lobby.standard.mapvalues[map - 1] != null) {
+				mapIndex = map - 1;
+				mapId = map;
+			} else if (map >= 0 && map < mapCount && owner.lobby.standard.mapvalues[map] != null) {
+				mapIndex = map;
+				mapId = map;
+			}
+		}
+		if (mapIndex < 0) {
+			debug("setMap invalid map id: " + map);
+			mapIndex = 0;
+			mapId = 1;
+		}
+		this.map[0] = mapIndex;
+		this.map[1] = mapId;
+		MapPacket();
     	//if (this.roommode==2)
     	//	event(1);
 	}
@@ -124,6 +169,11 @@ public class Room {
 	public void event(int typ)
 	{
 		if (typ==1) {
+			BotClass owner = getRoomOwnerBot();
+			if (owner == null) {
+				debug("event skipped: room owner missing");
+				return;
+			}
 			if((this.map[0]==39 || this.map[0]==40 || this.map[0]==41) && this.roommode==2)
 	        {
 	        	int diff = this.map[0]==39 ? 1 : this.map[0]==40 ? 50 : this.map[0]==41 ? 100 : 200;
@@ -338,7 +388,12 @@ public class Room {
     		drop = new int[tdrop];
     	}
 		//event end
-		if (roommode==2 && (spmobs=bot[roomowner].lobby.standard.SpMobs)!=null && !player && !event){
+		BotClass owner = getRoomOwnerBot();
+		if (owner == null) {
+			debug("DeadPacket skipped: room owner missing");
+			return;
+		}
+		if (roommode==2 && (spmobs=owner.lobby.standard.SpMobs)!=null && !player && !event){
 			tdrop=((tdrop = (int)(Math.random()*7))<3 ? (MapValues[2]==typ ? tdrop+1 : tdrop) : (MapValues[2]==typ ? 1 : 0));
 			for (int i = 0; i<spmobs[0].length; i++)
         		if(spdrop[0]=(typ==spmobs[0][i]))
@@ -361,7 +416,7 @@ public class Room {
         	if (roommode==2 && MapValues[2]==typ && i == 0)
         		drop[i]=6;
         	else if (roommode==2)
-        		drop[i]=bot[roomowner].lobby.standard.droplist[(int)(Math.random()*(spdrop[1] ? 106 : 40))+(spdrop[1] ? 40 : 0)];
+				drop[i]=owner.lobby.standard.droplist[(int)(Math.random()*(spdrop[1] ? 106 : 40))+(spdrop[1] ? 40 : 0)];
         //event override
         if (roommode==2 && event && MapValues[2]==typ && tdrop>1)
         	drop[1]=39;
@@ -493,17 +548,25 @@ public class Room {
             	return;
         	}
             
-            /*if (roommode==2 && MapValues[6]>this.MobKill[9]) {
+            if (roommode==2 && MapValues[6]>this.MobKill[9]) {
             	hackdetected(id, "[AutoBan]: MinmobCount not met!");
             	return;
-        	}*/
+        	}
         	EndRoom(expp, new int[]{gigas,gigas,gigas,gigas,gigas,gigas,gigas,gigas}, 10, winner, false);
         }
     }
     
-    protected void hackdetected(int id, String reason) {
-    	
-
+	protected void hackdetected(int id, String reason) {
+		BotClass owner = getRoomOwnerBot();
+		if (owner == null) {
+			debug("hackdetected skipped: room owner missing");
+			return;
+		}
+		BotClass target = (id >= 0 && id < bot.length) ? bot[id] : null;
+		if (target == null || target.channel == null || target.channel.socket == null || target.channel.socket.isClosed()) {
+			debug("hackdetected skipped: target disconnected (" + reason + ")");
+			return;
+		}
     	for (int i = 0; i<8; i++)
     		if(bot[i]!=null){
     			
@@ -525,16 +588,25 @@ public class Room {
         			playerlist+=bot[i].botname+"["+bot[i].level+"], ";
         		}catch (Exception e){}
     	int time = (int)TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis() - this.starttime);
-    	String [] value = {""+MapValues[1], bot[roomowner].botname, playerlist, ""+time, ""+MobKill[9]};
+    	String [] value = {""+MapValues[1], owner.botname, playerlist, ""+time, ""+MobKill[9]};
     	Main.sql.psupdate("INSERT INTO `sector_log` (`level`, `roommaster`, `roomplayers`, `time`, `kills`, `date`)VALUES (?, ?, ?, ?, ?, now())", value);
-    	value = new String[]{"1", "-1",reason, bot[id].account};
+		if (reason != null && reason.startsWith("[AutoBan]")) {
+			debug("hackdetected warning only: " + reason);
+			return;
+		}
+    	value = new String[]{"1", "-1",reason, target.account};
 		Main.sql.psupdate("UPDATE `bout_users` SET `banned`=?, `bantime`=?, `banStime`=now(), `banreason`=? WHERE `username`=?", value);
-		bot[id].channel.closecon();
-    	clearstage=bot[roomowner].executorp.schedule(SectorClear(new int[]{0,0,0,0,0,0,0,0},new boolean[] {false,false,false,false,false,false,false,false},bot,1,1,MobKill,PlayerKill,new int[]{0,0,0,0,0,0,0,0},new int[]{0,0,0,0,0,0,0,0}), 5, TimeUnit.SECONDS);
+		target.channel.closecon();
+    	clearstage=ROOM_EXECUTOR.schedule(SectorClear(new int[]{0,0,0,0,0,0,0,0},new boolean[] {false,false,false,false,false,false,false,false},bot,1,1,MobKill,PlayerKill,new int[]{0,0,0,0,0,0,0,0},new int[]{0,0,0,0,0,0,0,0}), 5, TimeUnit.SECONDS);
     }
     
     public void EndRoom(int[] exp, int[] gigas, int coins, int[] winner, boolean timeover)
     {
+        BotClass owner = getRoomOwnerBot();
+        if (owner == null) {
+            debug("EndRoom skipped: room owner missing");
+            return;
+        }
         boolean[] leveledup = new boolean[8];
         int[] points = new int[8];
 		packet.clean();
@@ -566,7 +638,7 @@ public class Room {
 		        			}
 		        	bot[i].UpdateBot();
 		        	bot[i].UpdateCoins();
-		        	BotClass[] bottemp = bot[roomowner].lobby.bots;
+		        	BotClass[] bottemp = owner.lobby.bots;
 		        	if (bot[i].guildnum!=-1){
 			        	bot[i].guildMemberpoints[bot[i].guildnum]+=points[i];
 			        	bot[i].guildtotalpoints+=points[i];
@@ -588,10 +660,10 @@ public class Room {
         		}catch (Exception e){}
         if (roommode==2){
         	int time = (int)TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis() - this.starttime);
-        	String [] value = {""+MapValues[1], bot[roomowner].botname, playerlist, ""+time, ""+MobKill[9]};
+        	String [] value = {""+MapValues[1], owner.botname, playerlist, ""+time, ""+MobKill[9]};
         	Main.sql.psupdate("INSERT INTO `sector_log` (`level`, `roommaster`, `roomplayers`, `time`, `kills`, `date`)VALUES (?, ?, ?, ?, ?, now())", value);
         }
-        clearstage=bot[roomowner].executorp.schedule(SectorClear(winner,leveledup,bot,1,1,MobKill,PlayerKill,points,exp), 5, TimeUnit.SECONDS);
+        clearstage=ROOM_EXECUTOR.schedule(SectorClear(winner,leveledup,bot,1,1,MobKill,PlayerKill,points,exp), 5, TimeUnit.SECONDS);
     }
     
     private static Runnable TimeOver(final Room room) {
@@ -704,7 +776,12 @@ public class Room {
     	return new Runnable() {
     		@Override
     		public void run() {
-    			Packet packet=bot[room.roomowner].packet;
+    			BotClass owner = room.getRoomOwnerBot();
+    			if (owner == null) {
+    				room.debug("PvpDrops skipped: room owner missing");
+    				return;
+    			}
+    			Packet packet=owner.packet;
     			int[] drops = new int[10];
     			int drop = 0;
     			if (room.roommode==3)
@@ -739,7 +816,12 @@ public class Room {
     	try{
     		PvpDrop.cancel(true);
     	}catch (Exception e){}
-    	PvpDrop=bot[roomowner].executorp.schedule(PvpDrops(this, bot), (int)(Math.random()*15+15), TimeUnit.SECONDS);
+    	BotClass owner = getRoomOwnerBot();
+    	if (owner == null) {
+    		debug("PvpDropRerun skipped: room owner missing");
+    		return;
+    	}
+    	PvpDrop=ROOM_EXECUTOR.schedule(PvpDrops(this, bot), (int)(Math.random()*15+15), TimeUnit.SECONDS);
     }
 
     public void waitroom(boolean statupdate)
@@ -751,7 +833,12 @@ public class Room {
 		this.PlayerKill = new int[]{0,0,0,0,0,0,0,0};
 		this.deadSp=new int[]{4,4,4,4,4,4,4,4};
 		this.drops=new int[100];
-		bot[roomowner].RoomsPacket(true, new int[]{roommode==0 ? 0 : roommode-1, roommode==0 ? (int)(roomnum/6) : (int)((roomnum-600*(roommode-1))/6)});
+		BotClass owner = getRoomOwnerBot();
+		if (owner == null) {
+			debug("waitroom skipped: room owner missing");
+			return;
+		}
+		owner.RoomsPacket(true, new int[]{roommode==0 ? 0 : roommode-1, roommode==0 ? (int)(roomnum/6) : (int)((roomnum-600*(roommode-1))/6)});
 		for (int i = 0; i<8; i++){
 			if (i==roomowner)
 				this.roomready[i]=new boolean[]{true, false};
@@ -933,6 +1020,11 @@ public class Room {
     
     public void Start()
     {
+    	BotClass owner = getRoomOwnerBot();
+    	if (owner == null) {
+    		debug("Start skipped: room owner missing");
+    		return;
+    	}
     	boolean ready = true;
     	boolean[] enuff = {false, false};
     	int error = 0;
@@ -962,14 +1054,14 @@ public class Room {
     	if(error!=0){
     		packet.addHeader((byte) 0xF3, (byte) 0x2E);
     		packet.addByte2((byte) 0x00, (byte)error);
-    		bot[roomowner].send(packet,false);
+    		owner.send(packet,false);
     		return;
     	}
     	if (roommode==2){
-    		MapValues=bot[roomowner].lobby.standard.mapvalues[this.map[0]];
+    		MapValues=owner.lobby.standard.mapvalues[this.map[0]];
     		//prep
-    		int[][] mobtemp=bot[roomowner].lobby.standard.moblist(this.map[0]);
-    		Map<Integer, Integer> rspawn=bot[roomowner].lobby.standard.rebirthspawn;
+    		int[][] mobtemp=owner.lobby.standard.moblist(this.map[0]);
+    		Map<Integer, Integer> rspawn=owner.lobby.standard.rebirthspawn;
     		int[] mobwork=mobtemp[0].clone();
     		for (int i = 0; i<mobwork.length; i++)
     			if(rspawn.containsKey(mobwork[i]))
@@ -979,13 +1071,13 @@ public class Room {
     		Moblist[0]=mobwork;
     		Moblist[1]=mobtemp[1];
     		Mobkilled=Moblist[0].clone();
-    		timeover=bot[roomowner].executorp.schedule(TimeOver(this), MapValues[5], TimeUnit.MINUTES);
+    		timeover=ROOM_EXECUTOR.schedule(TimeOver(this), MapValues[5], TimeUnit.MINUTES);
     	}
     	if (roommode!=2)
     		PvpDropRerun();
     	this.status = 3;
         this.starttime  = System.currentTimeMillis();
-        bot[roomowner].RoomsPacket(true, new int[]{roommode==0 ? 0 : roommode-1, roommode==0 ? (int)(roomnum/6) : (int)((roomnum-600*(roommode-1))/6)});
+        owner.RoomsPacket(true, new int[]{roommode==0 ? 0 : roommode-1, roommode==0 ? (int)(roomnum/6) : (int)((roomnum-600*(roommode-1))/6)});
 		StartPackets();
     }
     
@@ -1013,7 +1105,7 @@ public class Room {
 		packet.addHeader((byte) 0xF3, (byte) 0x2E);
         packet.addPacketHead((byte) 0x01, (byte) 0x00);
         packet.addInt(roomnum, 2, false);
-        packet.addInt(this.map[0], 2, false);
+        packet.addInt(this.map[1], 2, false);
         packet.addByte2((byte) 0x03, (byte) 0x00);// soort van beginpositie mod 0x50 en ^ is spectator
         packet.addByte2((byte) 0x01, (byte) 0x00);
         packet.addByte2((byte) 0x00, (byte) 0x00);
