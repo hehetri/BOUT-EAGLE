@@ -129,19 +129,39 @@ public class Room {
 	{
 		if (this.roomowner!=num)
 			return;
-		if (getRoomOwnerBot() == null) {
+		BotClass owner = getRoomOwnerBot();
+		if (owner == null) {
 			debug("setMap skipped: room owner missing");
 			return;
 		}
-		if (this.roommode!=2){
-    		if(map==0)
-    			this.map[0] = (int)(Math.random()*5)+1;
-    		else
-    			this.map[0] = map-1;}
-    	else
-    		this.map[0] = map;
-    	this.map[1]=map;
-    	MapPacket();
+		int mapIndex = -1;
+		int mapId = map;
+		int mapCount = owner.lobby.standard.mapvalues.length;
+		if (this.roommode != 2) {
+			if (map >= 0 && map < mapCount && owner.lobby.standard.mapvalues[map] != null) {
+				mapIndex = map;
+				mapId = map + 1;
+			} else if (map - 1 >= 0 && map - 1 < mapCount && owner.lobby.standard.mapvalues[map - 1] != null) {
+				mapIndex = map - 1;
+				mapId = map;
+			}
+		} else {
+			if (map >= 0 && map < mapCount && owner.lobby.standard.mapvalues[map] != null) {
+				mapIndex = map;
+				mapId = map;
+			} else if (map - 1 >= 0 && map - 1 < mapCount && owner.lobby.standard.mapvalues[map - 1] != null) {
+				mapIndex = map - 1;
+				mapId = map;
+			}
+		}
+		if (mapIndex < 0) {
+			debug("setMap invalid map id: " + map);
+			mapIndex = 0;
+			mapId = 1;
+		}
+		this.map[0] = mapIndex;
+		this.map[1] = mapId;
+		MapPacket();
     	//if (this.roommode==2)
     	//	event(1);
 	}
