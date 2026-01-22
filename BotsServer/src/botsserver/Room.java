@@ -548,10 +548,10 @@ public class Room {
             	return;
         	}
             
-            /*if (roommode==2 && MapValues[6]>this.MobKill[9]) {
+            if (roommode==2 && MapValues[6]>this.MobKill[9]) {
             	hackdetected(id, "[AutoBan]: MinmobCount not met!");
             	return;
-        	}*/
+        	}
         	EndRoom(expp, new int[]{gigas,gigas,gigas,gigas,gigas,gigas,gigas,gigas}, 10, winner, false);
         }
     }
