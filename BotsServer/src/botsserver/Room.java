@@ -590,6 +590,10 @@ public class Room {
     	int time = (int)TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis() - this.starttime);
     	String [] value = {""+MapValues[1], owner.botname, playerlist, ""+time, ""+MobKill[9]};
     	Main.sql.psupdate("INSERT INTO `sector_log` (`level`, `roommaster`, `roomplayers`, `time`, `kills`, `date`)VALUES (?, ?, ?, ?, ?, now())", value);
+		if (reason != null && reason.startsWith("[AutoBan]")) {
+			debug("hackdetected warning only: " + reason);
+			return;
+		}
     	value = new String[]{"1", "-1",reason, target.account};
 		Main.sql.psupdate("UPDATE `bout_users` SET `banned`=?, `bantime`=?, `banStime`=now(), `banreason`=? WHERE `username`=?", value);
 		target.channel.closecon();
