@@ -138,19 +138,19 @@ public class Room {
 		int mapId = map;
 		int mapCount = owner.lobby.standard.mapvalues.length;
 		if (this.roommode != 2) {
-			if (map >= 0 && map < mapCount && owner.lobby.standard.mapvalues[map] != null) {
+			if (map - 1 >= 0 && map - 1 < mapCount && owner.lobby.standard.mapvalues[map - 1] != null) {
+				mapIndex = map - 1;
+				mapId = map;
+			} else if (map >= 0 && map < mapCount && owner.lobby.standard.mapvalues[map] != null) {
 				mapIndex = map;
 				mapId = map + 1;
-			} else if (map - 1 >= 0 && map - 1 < mapCount && owner.lobby.standard.mapvalues[map - 1] != null) {
-				mapIndex = map - 1;
-				mapId = map;
 			}
 		} else {
-			if (map >= 0 && map < mapCount && owner.lobby.standard.mapvalues[map] != null) {
-				mapIndex = map;
-				mapId = map;
-			} else if (map - 1 >= 0 && map - 1 < mapCount && owner.lobby.standard.mapvalues[map - 1] != null) {
+			if (map - 1 >= 0 && map - 1 < mapCount && owner.lobby.standard.mapvalues[map - 1] != null) {
 				mapIndex = map - 1;
+				mapId = map;
+			} else if (map >= 0 && map < mapCount && owner.lobby.standard.mapvalues[map] != null) {
+				mapIndex = map;
 				mapId = map;
 			}
 		}
