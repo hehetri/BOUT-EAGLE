@@ -409,6 +409,7 @@ public class Standard {
             		bot.sendChatMsg("@announce <on|off>          - need mod rights", 1, false, -1);
             	}
 				bot.sendChatMsg("@help <command> gives more info about the command.", 2, false, -1);
+            	bot.sendChatMsg("@exit - leave the current room.", 2, false, -1);
             	bot.sendChatMsg("@tags <tag> - all roomtags that are available for use.", 2, false, -1);
             	bot.sendChatMsg("@ticket <question info> creates a ticket to get help from staff.", 1, false, -1);
             	return;
@@ -467,6 +468,8 @@ public class Standard {
 			else if (command[1].equals("tags")){
 				bot.sendChatMsg("Shows all available roomtags with some info about them.", 2, false, -1);
 				bot.sendChatMsg("if a roomtag is specified it will show extra information about the command.", 2, false, -1);}
+			else if (command[1].equalsIgnoreCase("exit"))
+				bot.sendChatMsg("Leaves the current room when used while inside one.", 2, false, -1);
 			else if (command[1].equals("ticket"))
 				bot.sendChatMsg("This opens a ticket which staff will try to answer as soon as possible.", 2, false, -1);
 			else if (command[1].equals("lookup") && bot.gm>149) {
