@@ -1,0 +1,32 @@
+environment: dev
+protocol:
+  listen_host: 0.0.0.0
+  listen_port: 54100
+  read_timeout_seconds: 10
+  max_packet_size: 4096
+  use_crypto_table: false
+s2s:
+  enabled: true
+  listen_host: 0.0.0.0
+  listen_port: 54110
+  shared_secret: change-me
+  version: 1
+database:
+  dsn: postgresql://postgres:postgres@127.0.0.1:5432/bouteagle
+  min_size: 2
+  max_size: 20
+  command_timeout: 5
+scheduler:
+  tick_interval_ms: 200
+  max_queue_size: 2048
+  task_timeout_seconds: 2
+plugins:
+  directory: bots/plugins
+  hot_reload: false
+  default_timeout_seconds: 0.5
+observability:
+  json_logs: true
+  log_level: INFO
+  prometheus_host: 0.0.0.0
+  prometheus_port: 9112
+  enable_tracing: false
