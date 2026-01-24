@@ -11,6 +11,7 @@ public class Main {
     public static RoomServer roomserver;
     public static String str = new String();
     public static RelayServer relayserver;
+    public static double ExpRate = 1.0;
     protected static String ChannelName = "BoutEagle";
     public static String[] arg = null;
     public static int ChannelPort = 11002;

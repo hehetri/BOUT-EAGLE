@@ -46,6 +46,12 @@ public class SQLDatabase {
         user = sqldata.getProperty("MySQL_id");
         pass = sqldata.getProperty("MySQL_pw");
         database = sqldata.getProperty("MySQL_db");
+        try{
+            Main.ExpRate = Double.parseDouble(sqldata.getProperty("exp_rate", "1.0"));
+        }catch (Exception ex){
+            Main.ExpRate = 1.0;
+            debug("Invalid exp_rate in configs/mysql.conf, defaulting to 1.0");
+        }
     }
 
     public void start()

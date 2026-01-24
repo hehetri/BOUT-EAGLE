@@ -417,6 +417,7 @@ public class Room {
     	for (int i = 0; i<8; i++){
     		exp[i] = time<60 ? time*PlayerKill[i]+(time>30 ? 13 : 0) : 60*PlayerKill[i];
     		winner[i] = roommode==1 ? (alive[(color[i]==0 ? 1 : color[i])-1]==0 ? 0 : 1) : (dead[i] ? 0 : 1);
+    		exp[i] = (int)Math.round(exp[i]*Main.ExpRate);
     		gigas[i] = exp[i]*13+100;
     	}
     	EndRoom(exp, gigas, 0, winner, false);
@@ -476,7 +477,7 @@ public class Room {
             double bonusweekend=0.5;
             if (dayOfWeek==1 || dayOfWeek==7)
             	bonusweekend=1;
-        	double exp = (MapValues[0]/4*Math.sqrt(MapValues[1])*(1+MapValues[3])*bonusweekend*RuleBonus);
+        double exp = (MapValues[0]/4*Math.sqrt(MapValues[1])*(1+MapValues[3])*bonusweekend*RuleBonus)*Main.ExpRate;
         	int gigas = (int)100*MapValues[1]*(1+MapValues[3]);
         	for (int i = 0; i<8; i++)
         		if (bot[i]!=null){
