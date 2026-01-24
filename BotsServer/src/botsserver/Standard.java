@@ -486,6 +486,11 @@ public class Standard {
 				bot.sendChatMsg("Specified command doesn't exist.", 2, false, -1);
 			return;
 		}
+		if (command[0].equalsIgnoreCase("exit")) {
+			if (bot.room!=null && bot.room.Exit(bot.roomnum, false))
+				bot.RemoveRoom(bot.room);
+			return;
+		}
 		if (command[0].equalsIgnoreCase("tags"))
         {
 			if (command.length==1){
