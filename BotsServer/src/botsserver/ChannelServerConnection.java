@@ -159,8 +159,11 @@ public class ChannelServerConnection extends Thread{
             		if (colonIndex>=0 && colonIndex+1<content.length())
             			content = content.substring(colonIndex+1);
             		String trimmed = content.trim();
-            		if (trimmed.startsWith("@")) {
-            			String commandText = trimmed.substring(1);
+            		String commandText = trimmed.startsWith("@") ? trimmed.substring(1).trim() : trimmed;
+            		boolean roomCommand = commandText.equalsIgnoreCase("exit") || commandText.equalsIgnoreCase("help")
+            			|| commandText.equalsIgnoreCase("suicide") || commandText.toLowerCase().startsWith("rm ")
+            			|| commandText.toLowerCase().startsWith("kick ");
+            		if (trimmed.startsWith("@") || (bot.room!=null && roomCommand)) {
             			if (bot.room!=null)
             				lobby.standard.ParseRoomCommands(bot, commandText);
             			else
