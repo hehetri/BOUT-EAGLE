@@ -1,0 +1,20 @@
+environment: dev
+protocol:
+  listen_host: 0.0.0.0
+  listen_port: 55200
+  read_timeout_seconds: 10
+  max_packet_size: 8192
+  use_crypto_table: false
+routing:
+  max_channels: 256
+  max_rooms: 4096
+  fanout_batch_size: 128
+limits:
+  per_connection_queue: 256
+  per_connection_bytes: 262144
+observability:
+  json_logs: true
+  log_level: INFO
+  prometheus_host: 0.0.0.0
+  prometheus_port: 9122
+  enable_tracing: false
