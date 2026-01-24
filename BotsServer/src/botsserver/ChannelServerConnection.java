@@ -150,20 +150,26 @@ public class ChannelServerConnection extends Thread{
                 	@SuppressWarnings("unused")int length=pack.getInt(2);
                     boolean guild = pack.getInt(2)==5;
                     String msg = pack.getString(0, pack.getLen(), false);
-            		if (bot.room!=null) {
-            			if ((""+msg.charAt(3+bot.botname.length())).equals("@"))
-            				lobby.standard.ParseRoomCommands(bot, msg.substring(4+bot.botname.length()));
-            			else if (bot.muted(false)==0 && bot.parsemessage(msg.substring(2+bot.botname.length())))
-            				bot.room.SendMessage(true, bot.roomnum, "["+bot.botname+"]"+msg.split("]", 2)[1], !bot.announce ? 0 : bot.gm==100 ? 4 : bot.gm==150 ? 1 : bot.gm>199 ? 2 : 0);
+            		String[] parts = msg.split("]", 2);
+            		String content = parts.length>1 ? parts[1] : msg;
+            		String trimmed = content.trim();
+            		if (trimmed.startsWith("@")) {
+            			String commandText = trimmed.substring(1);
+            			if (bot.room!=null)
+            				lobby.standard.ParseRoomCommands(bot, commandText);
+            			else
+            				lobby.standard.ParseCommands(bot, new String[]{commandText});
+            		}
+            		else if (bot.room!=null) {
+            			if (bot.muted(false)==0 && bot.parsemessage(msg.substring(2+bot.botname.length())))
+            				bot.room.SendMessage(true, bot.roomnum, "["+bot.botname+"]"+content, !bot.announce ? 0 : bot.gm==100 ? 4 : bot.gm==150 ? 1 : bot.gm>199 ? 2 : 0);
             			else
             				bot.sendChatMsg("[Server] you are muted for "+(bot.muted==-1 ? "forever" : bot.muted+" seconds."),2,false,-1);
             		}
-            		else if ((""+msg.charAt(3+bot.botname.length())).equals("@"))
-            			lobby.standard.ParseCommands(bot, new String[]{msg.substring((4+bot.botname.length()), msg.length())});
             		else if (guild)
             			bot.sendGuildMsg("["+bot.botname+"]"+msg.substring(2+bot.botname.length()));
             		else if (bot.muted(false)==0 && bot.parsemessage(msg.substring(2+bot.botname.length())))
-            			bot.sendChatMsg("["+bot.botname+"]"+msg.split("]", 2)[1], !bot.announce ? 0 : bot.gm==100 ? 4 : bot.gm==150 ? 1 : bot.gm>199 ? 2 : 0, true, -1);
+            			bot.sendChatMsg("["+bot.botname+"]"+content, !bot.announce ? 0 : bot.gm==100 ? 4 : bot.gm==150 ? 1 : bot.gm>199 ? 2 : 0, true, -1);
             		else
             			bot.sendChatMsg("[Server] you are muted for "+(bot.muted==-1 ? "forever" : bot.muted+" seconds."),2,false,-1);
                     break;
