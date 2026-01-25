@@ -70,6 +70,12 @@ def main() -> None:
         file_count = len(file_entries)
         manifest["files"] = file_entries
         manifest["file_count"] = file_count
+        header[3] = file_count
+        manifest["container_header"] = header
+
+    if header[3] != file_count:
+        header[3] = file_count
+        manifest["container_header"] = header
 
     if file_count != len(file_entries):
         raise SystemExit("Manifest file count does not match entry list length.")
