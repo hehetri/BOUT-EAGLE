@@ -1,6 +1,7 @@
 package botsserver;
 
 import java.sql.ResultSet;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Map;
 import java.util.concurrent.ScheduledFuture;
@@ -427,30 +428,43 @@ public class Room {
     {
     	try {
     		if (roommode==2) {
-		    	if (this.Moblist[0][num]==typ) {
-		    		if (this.Mobkilled[num]==-1 && this.Moblist[1][num]!=2) {
-		    			String [] value = {""+MapValues[1], ""+num+": supected "+this.Moblist[0][num]+" - actual "+typ, "already killed",};
-		            	Main.sql.psupdate("INSERT INTO `bout_mob_log` (`level`, `mobinfo`, `error`, `date`)VALUES (?, ?, ?, now())", value);
-		    		}
-		    	}
-		    	else {
-		    		String [] value = {""+MapValues[1], ""+num+": supected "+this.Moblist[0][num]+" - actual "+typ, "Incorrect ID",};
+    			if (num<0 || num>=this.Moblist[0].length || this.Moblist[0][num]!=typ) {
+    				int normalized = -1;
+    				for (int i = 0; i<this.Moblist[0].length; i++)
+    					if (this.Moblist[0][i]==typ){
+    						normalized=i;
+    						break;
+    					}
+    				if (normalized!=-1){
+    					String [] value = {""+MapValues[1], ""+num+": suspected "+this.Moblist[0][normalized]+" - actual "+typ+" (normalized to "+normalized+")", "Mismatch ID",};
+    	            	Main.sql.psupdate("INSERT INTO `bout_mob_log` (`level`, `mobinfo`, `error`, `date`)VALUES (?, ?, ?, now())", value);
+    					num=normalized;
+    				}
+    				else {
+    					String [] value = {""+MapValues[1], ""+num+": suspected unknown - actual "+typ, "Unknown ID",};
+    	            	Main.sql.psupdate("INSERT INTO `bout_mob_log` (`level`, `mobinfo`, `error`, `date`)VALUES (?, ?, ?, now())", value);
+    					hackdetected(id, "[Debug]: Unknown mob id received!");
+    					return;
+    				}
+    			}
+	    		if (this.Mobkilled[num]==-1 && this.Moblist[1][num]!=2) {
+	    			String [] value = {""+MapValues[1], ""+num+": suspected "+typ+" - actual "+typ, "already killed",};
 	            	Main.sql.psupdate("INSERT INTO `bout_mob_log` (`level`, `mobinfo`, `error`, `date`)VALUES (?, ?, ?, now())", value);
-	            	hackdetected(id, "[AutoBan]: Wrong mob id received!");
 	            	return;
-		    	}
+	    		}
     		}
     	}catch (Exception e){debug(e.getMessage());}
     	if (0<=killedby && killedby<8)
         	this.MobKill[killedby]++;
     	if (pushed==1)
     		this.MobKill[8]++;
-    	if (this.Mobkilled[num]!=-1 || this.Moblist[1][num]==2)
-    		this.MobKill[9]++;
     	DeadPacket(num, 0x25, typ, false);
     	try {
-	    	if (roommode==2)
+	    	if (roommode==2){
 	    		this.Mobkilled[num]=-1;
+	    		if (this.Mobkilled[num]==-1 || this.Moblist[1][num]==2)
+	    			this.MobKill[9]++;
+	    	}
     	}catch (Exception e){debug(e.getMessage());}
     	if (roommode==3 && num>15){
     		int time = (int)TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis() - this.starttime);
@@ -485,12 +499,12 @@ public class Room {
         			winner[i]=1;
         		}
         	boolean triggerkill=true;
-            for (int i = 0; i<Moblist.length; i++)
-            	if (this.Moblist[1][num]==1 && this.Mobkilled[num]!=-1)
+            for (int i = 0; i<Moblist[0].length; i++)
+            	if (this.Moblist[1][i]==1 && this.Mobkilled[i]!=-1)
             		triggerkill=false;
             
             if (roommode==2 && !triggerkill) {
-            	hackdetected(id, "[AutoBan]: Not all triggers were killed!");
+            	hackdetected(id, "[Debug]: Not all triggers were killed!");
             	return;
         	}
             
@@ -503,22 +517,15 @@ public class Room {
     }
     
     protected void hackdetected(int id, String reason) {
-    	
-
+    	Main.debug("Hack check: "+reason);
     	for (int i = 0; i<8; i++)
     		if(bot[i]!=null){
-    			
-    			// Make sure that if an admin is in the room we don't ban anyone
-//    			if (bot[i].) {
-    				
-//    			}
-    			
     			packet.clean();
     			packet.addHeader((byte)0x2A, (byte)0x27);
     	        packet.addByte2((byte)0x00, (byte)0x00);
     			bot[i].send(packet,false);
     		}
-    	SendMessage(true, 0, "hack attempt detected", 2);
+    	SendMessage(true, 0, "hack check warning", 2);
     	String playerlist = "";
         for (int i = 0; i<8; i++)
         	if(bot[i]!=null)
@@ -528,9 +535,6 @@ public class Room {
     	int time = (int)TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis() - this.starttime);
     	String [] value = {""+MapValues[1], bot[roomowner].botname, playerlist, ""+time, ""+MobKill[9]};
     	Main.sql.psupdate("INSERT INTO `sector_log` (`level`, `roommaster`, `roomplayers`, `time`, `kills`, `date`)VALUES (?, ?, ?, ?, ?, now())", value);
-    	value = new String[]{"1", "-1",reason, bot[id].account};
-		Main.sql.psupdate("UPDATE `bout_users` SET `banned`=?, `bantime`=?, `banStime`=now(), `banreason`=? WHERE `username`=?", value);
-		bot[id].channel.closecon();
     	clearstage=bot[roomowner].executorp.schedule(SectorClear(new int[]{0,0,0,0,0,0,0,0},new boolean[] {false,false,false,false,false,false,false,false},bot,1,1,MobKill,PlayerKill,new int[]{0,0,0,0,0,0,0,0},new int[]{0,0,0,0,0,0,0,0}), 5, TimeUnit.SECONDS);
     }
     
@@ -979,7 +983,11 @@ public class Room {
     		sectorclear=false;
     		Moblist[0]=mobwork;
     		Moblist[1]=mobtemp[1];
-    		Mobkilled=Moblist[0].clone();
+    		Mobkilled=new int[Moblist[0].length];
+    		Arrays.fill(Mobkilled, -1);
+    		for (int i = 0; i<Moblist[0].length; i++)
+    			if (Moblist[0][i]!=-1)
+    				Mobkilled[i]=i;
     		timeover=bot[roomowner].executorp.schedule(TimeOver(this), MapValues[5], TimeUnit.MINUTES);
     	}
     	if (roommode!=2)
