@@ -92,10 +92,9 @@ def main() -> None:
     offsets_position = len(output)
     output.extend(b"\x00" * (file_count * 4))
 
-    if data_start is None:
+    if data_start is None or data_start < len(output):
         data_start = len(output)
-    if len(output) > data_start:
-        raise SystemExit("Data start from manifest is smaller than header size.")
+        manifest["data_start"] = data_start
     output.extend(b"\x00" * (data_start - len(output)))
 
     offsets = []
