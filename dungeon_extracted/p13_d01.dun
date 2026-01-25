@@ -1,0 +1,340 @@
+ٿƮ ༺13 01(""Ʈ()"") ũƮ"													
+;	2005/06/17													
+;														
+;	[   ]													
+	68													
+;														
+;	[06 ༺ 01     ]													
+;	INDEX	 index												
+	0	95												
+	1	105												
+	2	97												
+	3	17												
+	4	17												
+	5	17												
+	6	17												
+	7	17												
+	8	17
+	9	84
+	10	97
+	11	-1
+	12	-1
+	13	103
+	14	104
+	15	104
+	16	104
+	17	104
+	18	105
+	19	105
+	20	107
+	21	94
+	22	104
+	23	82
+	24	104	
+	25	-1	
+	26	105	
+	27	-1	
+	28	104	
+	29	83	
+	30	104	
+	31	105	
+	32	105	
+	33	105	
+	34	103	
+	35	104	
+	36	104	
+	37	105	
+	38	97	 
+	39	104	
+	40	104
+	41	97
+	42	-1
+	43	82
+	44	82
+	45	-1
+	46	-1
+	47	17
+	48	17
+	49	104
+	50	104
+	51	105
+	52	105
+	53	94
+	54	95
+	55	94
+	56	104												
+	57	104												
+	58	104												
+	59	107												
+	60	106												
+	61	106												
+	62	108												
+	63	109												
+	64	109												
+	65	109												
+	66	17												
+	67	28												
+;														
+;														
+;	[block ]													
+	10													
+;														
+;	[01 block]													
+;	"info 01 :  rect (l,t,r,b)"													
+;	left	top	right	bottom										
+	0	15	24	0										
+;	info 02 :    (valid spawn array)													
+;	(count)	1	2	3	4	5	6	7	8	9	10	11	12	13
+	10	0	1	2	3	4	5	6	7	8	9			
+;	info 03 : Ȱ   (rebirth spawn array)													
+;	(count)	1	2	3	4	5	6	7	8	9	10	11	12	13
+	0													
+;	info 04 : Ŭǽ (trigger spawn array)													
+;	(count)	1	2	3	4	5	6	7	8	9	10	11	12	13
+	8	1	2	3	4	5	6	7	8					
+;	info 05 : VIP													
+;	(count)	1	2	3	4	5	6	7	8	9	10	11	12	13
+	0													
+;	info 06 : ܽ(exceptional spawn)(      ׿߸ ) *Ŭǿ    													
+;	(count)	1	2	3	4	5	6	7	8	9	10	11	12	13
+	2	0	9											
+;	info 07 : block  λ縻 (text)													
+;	λ縻(text -  ȵ)													
+	We're inside a massive data center. It's pretty cramped in here, so only one way out.													
+;	info 08 : īƮٿ( Ͻ  ȭ鿡  īƮٿ Ÿ̸  ΰ? 0= 1̻ =ش ʸŭ īƮٿ)													
+;														
+	0													
+;														
+;	[02 block]													
+;	"info 01 :  rect (l,t,r,b)"													
+;	left	top	right	bottom										
+	0	42	24	16										
+;	info 02 :    (valid spawn array)													
+;	(count)	1	2	3	4	5	6	7	8	9	10	11	12	13
+	3	10	11	12										
+;	info 03 : Ȱ   (rebirth spawn array)													
+;	(count)	1	2	3	4	5	6	7	8	9	10	11	12	13
+	0													
+;	info 04 : Ŭǽ (trigger spawn array)													
+;	(count)	1	2	3	4	5	6	7	8	9	10	11	12	13
+	3	10	11	12										
+;	info 05 : VIP													
+;	(count)	1	2	3	4	5	6	7	8	9	10	11	12	13
+	0													
+;	info 06 : ܽ(exceptional spawn)(      ׿߸ ) *Ŭǿ    													
+;	(count)	1	2	3	4	5	6	7	8	9	10	11	12	13
+	0													
+;	info 07 : block  λ縻 (text)													
+;	λ縻(text -  ȵ)													
+														
+;	info 08 : īƮٿ( Ͻ  ȭ鿡  īƮٿ Ÿ̸  ΰ? 0= 1̻ =ش ʸŭ īƮٿ)													
+;														
+	0													
+;														
+;	[03 block]													
+;	"info 01 :  rect (l,t,r,b)"													
+;	left	top	right	bottom										
+	0	66	24	43										
+;	info 02 :    (valid spawn array)													
+;	(count)	1	2	3	4	5	6	7	8	9	10	11	12	13
+	7	13	14	15	16	17	18	19						
+;	info 03 : Ȱ   (rebirth spawn array)													
+;	(count)	1	2	3	4	5	6	7	8	9	10	11	12	13
+	0													
+;	info 04 : Ŭǽ (trigger spawn array)													
+;	(count)	1	2	3	4	5	6	7	8	9	10	11	12	13
+	6	14	15	16	17	18	19							
+;	info 05 : VIP													
+;	(count)	1	2	3	4	5	6	7	8	9	10	11	12	13
+	0													
+;	info 06 : ܽ(exceptional spawn)(      ׿߸ ) *Ŭǿ    													
+;	(count)	1	2	3	4	5	6	7	8	9	10	11	12	13
+	1	13												
+;	info 07 : block  λ縻 (text)													
+;	λ縻(text -  ȵ)													
+														
+;	info 08 : īƮٿ( Ͻ  ȭ鿡  īƮٿ Ÿ̸  ΰ? 0= 1̻ =ش ʸŭ īƮٿ)													
+;														
+	0													
+;														
+;	[04 block]													
+;	"info 01 :  rect (l,t,r,b)"													
+;	left	top	right	bottom										
+	0	90	24	67										
+;	info 02 :    (valid spawn array)													
+;	(count)	1	2	3	4	5	6	7	8	9	10	11	12	13
+	1	20												
+;	info 03 : Ȱ   (rebirth spawn array)													
+;	(count)	1	2	3	4	5	6	7	8	9	10	11	12	13
+	0													
+;	info 04 : Ŭǽ (trigger spawn array)													
+;	(count)	1	2	3	4	5	6	7	8	9	10	11	12	13
+	1	20												
+;	info 05 : VIP													
+;	(count)	1	2	3	4	5	6	7	8	9	10	11	12	13
+	0													
+;	info 06 : ܽ(exceptional spawn)(      ׿߸ ) *Ŭǿ    													
+;	(count)	1	2	3	4	5	6	7	8	9	10	11	12	13
+	0													
+;	info 07 : block  λ縻 (text)													
+;	λ縻(text -  ȵ)													
+	It's another Blaster clone! Ranged attacks are effective.													
+;	info 08 : īƮٿ( Ͻ  ȭ鿡  īƮٿ Ÿ̸  ΰ? 0= 1̻ =ش ʸŭ īƮٿ)													
+;														
+	0													
+;														
+;	[05 block]													
+;	"info 01 :  rect (l,t,r,b)"													
+;	left	top	right	bottom										
+	0	120	24	91										
+;	info 02 :    (valid spawn array)													
+;	(count)	1	2	3	4	5	6	7	8	9	10	11	12	13
+	13	21	22	23	24	25	26	27	28	29	30	31	32	33
+;	info 03 : Ȱ   (rebirth spawn array)													
+;	(count)	1	2	3	4	5	6	7	8	9	10	11	12	13
+	0													
+;	info 04 : Ŭǽ (trigger spawn array)													
+;	(count)	1	2	3	4	5	6	7	8	9	10	11	12	13
+	10	22	24	25	26	27	28	30	31	32	33			
+;	info 05 : VIP													
+;	(count)	1	2	3	4	5	6	7	8	9	10	11	12	13
+	0													
+;	info 06 : ܽ(exceptional spawn)(      ׿߸ ) *Ŭǿ    													
+;	(count)	1	2	3	4	5	6	7	8	9	10	11	12	13
+	3	21	23	29										
+;	info 07 : block  λ縻 (text)													
+;	λ縻(text -  ȵ)													
+														
+;	info 08 : īƮٿ( Ͻ  ȭ鿡  īƮٿ Ÿ̸  ΰ? 0= 1̻ =ش ʸŭ īƮٿ)													
+;														
+	0													
+;														
+;	[06 block]													
+;	"info 01 :  rect (l,t,r,b)"													
+;	left	top	right	bottom										
+	0	130	24	121										
+;	info 02 :    (valid spawn array)													
+;	(count)	1	2	3	4	5	6	7	8	9	10	11	12	13
+	7	34	35	36	37	38	39	40						
+;	info 03 : Ȱ   (rebirth spawn array)													
+;	(count)	1	2	3	4	5	6	7	8	9	10	11	12	13
+	0													
+;	info 04 : Ŭǽ (trigger spawn array)													
+;	(count)	1	2	3	4	5	6	7	8	9	10	11	12	13
+	6	35	36	37	38	39	40							
+;	info 05 : VIP													
+;	(count)	1	2	3	4	5	6	7	8	9	10	11	12	13
+	0													
+;	info 06 : ܽ(exceptional spawn)(      ׿߸ ) *Ŭǿ    													
+;	(count)	1	2	3	4	5	6	7	8	9	10	11	12	13
+	1	34												
+;	info 07 : block  λ縻 (text)													
+;	λ縻(text -  ȵ)													
+														
+;	info 08 : īƮٿ( Ͻ  ȭ鿡  īƮٿ Ÿ̸  ΰ? 0= 1̻ =ش ʸŭ īƮٿ)													
+;														
+	0													
+;														
+;	[07 block]													
+;	"info 01 :  rect (l,t,r,b)"													
+;	left	top	right	bottom										
+	0	156	24	131										
+;	info 02 :    (valid spawn array)													
+;	(count)	1	2	3	4	5	6	7	8	9	10	11	12	13
+	4	41	42	43	44									
+;	info 03 : Ȱ   (rebirth spawn array)													
+;	(count)	1	2	3	4	5	6	7	8	9	10	11	12	13
+	0													
+;	info 04 : Ŭǽ (trigger spawn array)													
+;	(count)	1	2	3	4	5	6	7	8	9	10	11	12	13
+	1	41												
+;	info 05 : VIP													
+;	(count)	1	2	3	4	5	6	7	8	9	10	11	12	13
+	0													
+;	info 06 : ܽ(exceptional spawn)(      ׿߸ ) *Ŭǿ    													
+;	(count)	1	2	3	4	5	6	7	8	9	10	11	12	13
+	2	43	44											
+;	info 07 : block  λ縻 (text)													
+;	λ縻(text -  ȵ)													
+														
+;	info 08 : īƮٿ( Ͻ  ȭ鿡  īƮٿ Ÿ̸  ΰ? 0= 1̻ =ش ʸŭ īƮٿ)													
+;														
+	0													
+;														
+;	[08 block]													
+;	"info 01 :  rect (l,t,r,b)"													
+;	left	top	right	bottom										
+	0	182	24	157										
+;	info 02 :    (valid spawn array)													
+;	(count)	1	2	3	4	5	6	7	8	9	10	11	12	13
+	9	53	45	46	47	48	49	50	51	52				
+;	info 03 : Ȱ   (rebirth spawn array)													
+;	(count)	1	2	3	4	5	6	7	8	9	10	11	12	13
+	0													
+;	info 04 : Ŭǽ (trigger spawn array)													
+;	(count)	1	2	3	4	5	6	7	8	9	10	11	12	13
+	8	45	46	47	48	49	50	51	52					
+;	info 05 : VIP													
+;	(count)	1	2	3	4	5	6	7	8	9	10	11	12	13
+	0													
+;	info 06 : ܽ(exceptional spawn)(      ׿߸ ) *Ŭǿ    													
+;	(count)	1	2	3	4	5	6	7	8	9	10	11	12	13
+	1	53												
+;	info 07 : block  λ縻 (text)													
+;	λ縻(text -  ȵ)													
+														
+;	info 08 : īƮٿ( Ͻ  ȭ鿡  īƮٿ Ÿ̸  ΰ? 0= 1̻ =ش ʸŭ īƮٿ)													
+;														
+	0													
+;														
+;	[09 block]													
+;	"info 01 :  rect (l,t,r,b)"													
+;	left	top	right	bottom										
+	0	209	24	183										
+;	info 02 :    (valid spawn array)													
+;	(count)	1	2	3	4	5	6	7	8	9	10	11	12	13
+	8	54	55	56	57	58	59	60	61					
+;	info 03 : Ȱ   (rebirth spawn array)													
+;	(count)	1	2	3	4	5	6	7	8	9	10	11	12	13
+	0													
+;	info 04 : Ŭǽ (trigger spawn array)													
+;	(count)	1	2	3	4	5	6	7	8	9	10	11	12	13
+	5	56	57	58	59	60	61							
+;	info 05 : VIP													
+;	(count)	1	2	3	4	5	6	7	8	9	10	11	12	13
+	0													
+;	info 06 : ܽ(exceptional spawn)(      ׿߸ ) *Ŭǿ    													
+;	(count)	1	2	3	4	5	6	7	8	9	10	11	12	13
+	2	54	55											
+;	info 07 : block  λ縻 (text)													
+;	λ縻(text -  ȵ)													
+	Where are these blaster clones coming from? Something is controlling them...													
+;	info 08 : īƮٿ( Ͻ  ȭ鿡  īƮٿ Ÿ̸  ΰ? 0= 1̻ =ش ʸŭ īƮٿ)													
+;														
+	0													
+;														
+;	[10 block]													
+;	"info 01 :  rect (l,t,r,b)"													
+;	left	top	right	bottom										
+	0	224	24	210										
+;	info 02 :    (valid spawn array)													
+;	(count)	1	2	3	4	5	6	7	8	9	10	11	12	13
+	5	62	63	64	65	66								
+;	info 03 : Ȱ   (rebirth spawn array)													
+;	(count)	1	2	3	4	5	6	7	8	9	10	11	12	13
+	0													
+;	info 04 : Ŭǽ (trigger spawn array)													
+;	(count)	1	2	3	4	5	6	7	8	9	10	11	12	13
+	1	62												
+;	info 05 : VIP													
+;	(count)	1	2	3	4	5	6	7	8	9	10	11	12	13
+	0													
+;	info 06 : ܽ(exceptional spawn)(      ׿߸ ) *Ŭǿ    													
+;	(count)	1	2	3	4	5	6	7	8	9	10	11	12	13
+	0													
+;	info 07 : block  λ縻 (text)													
+;	λ縻(text -  ȵ)													
+	Love-Bug is weak but has high armor!													
+;	info 08 : īƮٿ( Ͻ  ȭ鿡  īƮٿ Ÿ̸  ΰ? 0= 1̻ =ش ʸŭ īƮٿ)													
+;														
+	0													

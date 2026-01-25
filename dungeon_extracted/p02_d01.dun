@@ -1,0 +1,196 @@
+ٿƮ ༺01 01 ("""") ũƮ"													
+;	2004/10/24													
+;														
+;	[   ]													
+	54													
+;														
+;	[02 ༺ 01     ]													
+;	INDEX	 index												
+	0	-1												
+	1	-1												
+	2	10												
+	3	10												
+	4	12												
+	5	12												
+	6	-1												
+	7	-1												
+	8	-1
+	9	-1
+	10	10
+	11	10
+	12	10
+	13	10
+	14	-1
+	15	10
+	16	12
+	17	12
+	18	12
+	19	12
+	20	12
+	21	12
+	22	12
+	23	12
+	24	-1
+	25	12
+	26	10
+	27	12
+	28	10
+	29	12
+	30	10
+	31	12
+	32	82
+	33	82
+	34	-1
+	35	14
+	36	14
+	37	14
+	38	14
+	39	14
+	40	10												
+	41	12												
+	42	14												
+	43	10												
+	44	12												
+	45	14												
+	46	10												
+	47	12												
+	48	14												
+	49	10												
+	50	11												
+	51	12												
+	52	12												
+	53	10												
+;														
+;	[block ]													
+	5													
+;														
+;	[01 block]													
+;	"info 01 :  rect (l,t,r,b)"													
+;	left	top	right	bottom										
+	29	24	50	0										
+;	info 02 :    (valid spawn array)													
+;	(count)	1	2	3	4	5	6	7	8	9	10	11	12	13
+	4	0	1	2	3									
+;	info 03 : Ȱ   (rebirth spawn array)													
+;	(count)	1	2	3	4	5	6	7	8	9	10	11	12	13
+	0													
+;	info 04 : Ŭǽ (trigger spawn array)													
+;	(count)	1	2	3	4	5	6	7	8	9	10	11	12	13
+	4	0	1	2	3									
+;	info 05 : VIP													
+;	(count)	1	2	3	4	5	6	7	8	9	10	11	12	13
+	0													
+;	info 06 : ܽ(exceptional spawn)(      ׿߸ ) *Ŭǿ    													
+;	(count)	1	2	3	4	5	6	7	8	9	10	11	12	13
+	0													
+;	info 07 : block  λ縻 (text)													
+;	λ縻(text -  ȵ)													
+	"This is the training simulator. Practice your combat skills here before going to battle. Good Luck! "													
+;	info 08 : īƮٿ( Ͻ  ȭ鿡  īƮٿ Ÿ̸  ΰ? 0= 1̻ =ش ʸŭ īƮٿ)													
+;														
+	0													
+;														
+;	[02 block]													
+;	"info 01 :  rect (l,t,r,b)"													
+;	left	top	right	bottom										
+	29	24	50	0										
+;	info 02 :    (valid spawn array)													
+;	(count)	1	2	3	4	5	6	7	8	9	10	11	12	13
+	4	4	5	6	7									
+;	info 03 : Ȱ   (rebirth spawn array)													
+;	(count)	1	2	3	4	5	6	7	8	9	10	11	12	13
+	0													
+;	info 04 : Ŭǽ (trigger spawn array)													
+;	(count)	1	2	3	4	5	6	7	8	9	10	11	12	13
+	4	4	5	6	7									
+;	info 05 : VIP													
+;	(count)	1	2	3	4	5	6	7	8	9	10	11	12	13
+	0													
+;	info 06 : ܽ(exceptional spawn)(      ׿߸ ) *Ŭǿ    													
+;	(count)	1	2	3	4	5	6	7	8	9	10	11	12	13
+	0													
+;	info 07 : block  λ縻 (text)													
+;	λ縻(text -  ȵ)													
+	Round 2! Try using combos and jump attacks. Run away if you're facing trouble.													
+;	info 08 : īƮٿ( Ͻ  ȭ鿡  īƮٿ Ÿ̸  ΰ? 0= 1̻ =ش ʸŭ īƮٿ)													
+;														
+	0													
+;														
+;	[03 block]													
+;	"info 01 :  rect (l,t,r,b)"													
+;	left	top	right	bottom										
+	29	24	50	0										
+;	info 02 :    (valid spawn array)													
+;	(count)	1	2	3	4	5	6	7	8	9	10	11	12	13
+	8	8	9	10	11	12	13	14	15					
+;	info 03 : Ȱ   (rebirth spawn array)													
+;	(count)	1	2	3	4	5	6	7	8	9	10	11	12	13
+	0													
+;	info 04 : Ŭǽ (trigger spawn array)													
+;	(count)	1	2	3	4	5	6	7	8	9	10	11	12	13
+	8	8	9	10	11	12	13	14	15					
+;	info 05 : VIP													
+;	(count)	1	2	3	4	5	6	7	8	9	10	11	12	13
+	0													
+;	info 06 : ܽ(exceptional spawn)(      ׿߸ ) *Ŭǿ    													
+;	(count)	1	2	3	4	5	6	7	8	9	10	11	12	13
+	0													
+;	info 07 : block  λ縻 (text)													
+;	λ縻(text -  ȵ)													
+	Round 3! Now there are more enemies. Press Z to transform and take them out! 													
+;	info 08 : īƮٿ( Ͻ  ȭ鿡  īƮٿ Ÿ̸  ΰ? 0= 1̻ =ش ʸŭ īƮٿ)													
+;														
+	0													
+;														
+;	[04 block]													
+;	"info 01 :  rect (l,t,r,b)"													
+;	left	top	right	bottom										
+	29	24	50	0										
+;	info 02 :    (valid spawn array)													
+;	(count)	1	2	3	4	5	6	7	8	9	10	11	12	13
+	11	24	25	26	27	28	29	30	31	32	33	34		
+;	info 03 : Ȱ   (rebirth spawn array)													
+;	(count)	1	2	3	4	5	6	7	8	9	10	11	12	13
+	0													
+;	info 04 : Ŭǽ (trigger spawn array)													
+;	(count)	1	2	3	4	5	6	7	8	9	10	11	12	13
+	8	24	25	26	27	28	29	30	31					
+;	info 05 : VIP													
+;	(count)	1	2	3	4	5	6	7	8	9	10	11	12	13
+	0													
+;	info 06 : ܽ(exceptional spawn)(      ׿߸ ) *Ŭǿ    													
+;	(count)	1	2	3	4	5	6	7	8	9	10	11	12	13
+	3	32	33	34										
+;	info 07 : block  λ縻 (text)													
+;	λ縻(text -  ȵ)													
+	Round 4! Enemies are weaker in smaller numbers. Lure and destroy them quickly!													
+;	info 08 : īƮٿ( Ͻ  ȭ鿡  īƮٿ Ÿ̸  ΰ? 0= 1̻ =ش ʸŭ īƮٿ)													
+;														
+	0													
+;														
+;	[05 block]													
+;	"info 01 :  rect (l,t,r,b)"													
+;	left	top	right	bottom										
+	29	24	50	0										
+;	info 02 :    (valid spawn array)													
+;	(count)	1	2	3	4	5	6	7	8	9	10	11	12	13
+	6	48	49	50	51	52	53							
+;	info 03 : Ȱ   (rebirth spawn array)													
+;	(count)	1	2	3	4	5	6	7	8	9	10	11	12	13
+	0													
+;	info 04 : Ŭǽ (trigger spawn array)													
+;	(count)	1	2	3	4	5	6	7	8	9	10	11	12	13
+	1	50												
+;	info 05 : VIP													
+;	(count)	1	2	3	4	5	6	7	8	9	10	11	12	13
+	0													
+;	info 06 : ܽ(exceptional spawn)(      ׿߸ ) *Ŭǿ    													
+;	(count)	1	2	3	4	5	6	7	8	9	10	11	12	13
+	0													
+;	info 07 : block  λ縻 (text)													
+;	λ縻(text -  ȵ)													
+	Final Round! Klez can be defeated by surrounding him.													
+;	info 08 : īƮٿ( Ͻ  ȭ鿡  īƮٿ Ÿ̸  ΰ? 0= 1̻ =ش ʸŭ īƮٿ)													
+;														
+	0													
+;														
