@@ -426,26 +426,14 @@ public class Room {
     
     public void MobKill(int typ, int num, int killedby, int pushed, int id)
     {
-    	try {
+		try {
 			if (roommode==2) {
-				if (num<0 || num>=this.Moblist[0].length) {
-					String [] value = {""+MapValues[1], ""+num+": suspected out of range - actual "+typ, "Invalid ID",};
-	            	Main.sql.psupdate("INSERT INTO `bout_mob_log` (`level`, `mobinfo`, `error`, `date`)VALUES (?, ?, ?, now())", value);
+				if (num<0 || num>=this.Moblist[0].length)
 					return;
-				}
-				if (this.Moblist[0][num]!=typ) {
-					int expectedTyp = this.Moblist[0][num];
-					String [] value = {""+MapValues[1], ""+num+": suspected "+expectedTyp+" - actual "+typ, "Mismatch ID",};
-	            	Main.sql.psupdate("INSERT INTO `bout_mob_log` (`level`, `mobinfo`, `error`, `date`)VALUES (?, ?, ?, now())", value);
-					typ = expectedTyp;
-				}
-				if (this.Mobkilled[num]==-1 && this.Moblist[1][num]!=2) {
-					String [] value = {""+MapValues[1], ""+num+": suspected "+typ+" - actual "+typ, "already killed",};
-	            	Main.sql.psupdate("INSERT INTO `bout_mob_log` (`level`, `mobinfo`, `error`, `date`)VALUES (?, ?, ?, now())", value);
-	            	return;
-				}
+				if (this.Mobkilled[num]==-1 && this.Moblist[1][num]!=2)
+					return;
 			}
-    	}catch (Exception e){debug(e.getMessage());}
+		}catch (Exception e){debug(e.getMessage());}
     	if (0<=killedby && killedby<8)
         	this.MobKill[killedby]++;
     	if (pushed==1)
@@ -509,25 +497,7 @@ public class Room {
     }
     
     protected void hackdetected(int id, String reason) {
-    	Main.debug("Hack check: "+reason);
-    	for (int i = 0; i<8; i++)
-    		if(bot[i]!=null){
-    			packet.clean();
-    			packet.addHeader((byte)0x2A, (byte)0x27);
-    	        packet.addByte2((byte)0x00, (byte)0x00);
-    			bot[i].send(packet,false);
-    		}
-    	SendMessage(true, 0, "hack check warning", 2);
-    	String playerlist = "";
-        for (int i = 0; i<8; i++)
-        	if(bot[i]!=null)
-        		try{
-        			playerlist+=bot[i].botname+"["+bot[i].level+"], ";
-        		}catch (Exception e){}
-    	int time = (int)TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis() - this.starttime);
-    	String [] value = {""+MapValues[1], bot[roomowner].botname, playerlist, ""+time, ""+MobKill[9]};
-    	Main.sql.psupdate("INSERT INTO `sector_log` (`level`, `roommaster`, `roomplayers`, `time`, `kills`, `date`)VALUES (?, ?, ?, ?, ?, now())", value);
-    	clearstage=bot[roomowner].executorp.schedule(SectorClear(new int[]{0,0,0,0,0,0,0,0},new boolean[] {false,false,false,false,false,false,false,false},bot,1,1,MobKill,PlayerKill,new int[]{0,0,0,0,0,0,0,0},new int[]{0,0,0,0,0,0,0,0}), 5, TimeUnit.SECONDS);
+    	return;
     }
     
     public void EndRoom(int[] exp, int[] gigas, int coins, int[] winner, boolean timeover)
