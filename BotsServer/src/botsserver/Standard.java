@@ -409,6 +409,7 @@ public class Standard {
             		bot.sendChatMsg("@announce <on|off>          - need mod rights", 1, false, -1);
             	}
 				bot.sendChatMsg("@help <command> gives more info about the command.", 2, false, -1);
+            	bot.sendChatMsg("@exit - leave the current room.", 2, false, -1);
             	bot.sendChatMsg("@tags <tag> - all roomtags that are available for use.", 2, false, -1);
             	bot.sendChatMsg("@ticket <question info> creates a ticket to get help from staff.", 1, false, -1);
             	return;
@@ -467,6 +468,8 @@ public class Standard {
 			else if (command[1].equals("tags")){
 				bot.sendChatMsg("Shows all available roomtags with some info about them.", 2, false, -1);
 				bot.sendChatMsg("if a roomtag is specified it will show extra information about the command.", 2, false, -1);}
+			else if (command[1].equalsIgnoreCase("exit"))
+				bot.sendChatMsg("Leaves the current room when used while inside one.", 2, false, -1);
 			else if (command[1].equals("ticket"))
 				bot.sendChatMsg("This opens a ticket which staff will try to answer as soon as possible.", 2, false, -1);
 			else if (command[1].equals("lookup") && bot.gm>149) {
@@ -481,6 +484,11 @@ public class Standard {
 			}
 			else
 				bot.sendChatMsg("Specified command doesn't exist.", 2, false, -1);
+			return;
+		}
+		if (command[0].equalsIgnoreCase("exit")) {
+			if (bot.room!=null && bot.room.Exit(bot.roomnum, false))
+				bot.RemoveRoom(bot.room);
 			return;
 		}
 		if (command[0].equalsIgnoreCase("tags"))
@@ -1121,7 +1129,7 @@ public class Standard {
 			}
 			case 35:
 			{
-				moblist=new int[]{310,311,310,310,310,311,-1,310,310,311,310,310,310,310,315,310,315,310,310,86,86,86,311,319,319,319,319,287,287,311,311,287,287,-1,319,312,304,316,-1,-1,311,311,287,287,312,312,-1,-1,-1,312,-1,311,312,311,312,-1,312,312,-1,319,86,315,315,312,86,-1,-1,312,312,312,319,319,320,320,320,315,312,312,319,311,311,311,319,317,312,312,311,312,304,312,312,315,312,312,312,312,312,312,312,311,311,287,287,-1,81,320,315,310,86,-1,-1,319,319,319,319,318,319,-1,-1,-1,312,312,164,164};
+				moblist=new int[]{310,311,310,310,310,311,-1,310,310,311,310,310,310,310,315,310,315,310,310,86,86,86,311,319,319,319,319,287,287,311,311,287,287,314,319,312,304,316,314,314,311,311,287,287,312,312,314,314,314,312,314,311,312,311,312,314,312,312,314,319,86,315,315,312,86,314,314,312,312,312,319,319,320,320,320,315,312,312,319,311,311,311,319,317,312,312,311,312,304,312,312,315,312,312,312,312,312,312,312,311,311,287,287,314,81,320,315,310,86,314,314,319,319,319,319,318,319,319,319,319,312,312,164,164};
 				mobtype=new int[]{1,1,0,0,1,1,1,1,1,0,0,1,1,1,1,1,1,1,1,3,3,3,0,0,1,1,1,1,1,1,1,1,1,0,1,0,0,0,0,0,0,0,0,0,1,1,0,0,0,1,1,1,1,0,0,0,1,0,0,0,3,1,1,1,3,0,0,1,1,0,0,0,0,0,0,0,1,0,0,-1,-1,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,0,1,1,1,1,1,1,0,3,1,0,0,3,0,0,0,0,4,0,0,0,0,0,0,0,0,0,0};
 				break;
 			}
