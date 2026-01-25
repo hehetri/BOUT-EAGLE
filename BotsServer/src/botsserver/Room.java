@@ -427,31 +427,24 @@ public class Room {
     public void MobKill(int typ, int num, int killedby, int pushed, int id)
     {
     	try {
-    		if (roommode==2) {
-    			if (num<0 || num>=this.Moblist[0].length || this.Moblist[0][num]!=typ) {
-    				int normalized = -1;
-    				for (int i = 0; i<this.Moblist[0].length; i++)
-    					if (this.Moblist[0][i]==typ){
-    						normalized=i;
-    						break;
-    					}
-    				if (normalized!=-1){
-    					String [] value = {""+MapValues[1], ""+num+": suspected "+this.Moblist[0][normalized]+" - actual "+typ+" (normalized to "+normalized+")", "Mismatch ID",};
-    	            	Main.sql.psupdate("INSERT INTO `bout_mob_log` (`level`, `mobinfo`, `error`, `date`)VALUES (?, ?, ?, now())", value);
-    					num=normalized;
-    				}
-    				else {
-    					String [] value = {""+MapValues[1], ""+num+": suspected unknown - actual "+typ, "Unknown ID",};
-    	            	Main.sql.psupdate("INSERT INTO `bout_mob_log` (`level`, `mobinfo`, `error`, `date`)VALUES (?, ?, ?, now())", value);
-    					return;
-    				}
-    			}
-	    		if (this.Mobkilled[num]==-1 && this.Moblist[1][num]!=2) {
-	    			String [] value = {""+MapValues[1], ""+num+": suspected "+typ+" - actual "+typ, "already killed",};
+			if (roommode==2) {
+				if (num<0 || num>=this.Moblist[0].length) {
+					String [] value = {""+MapValues[1], ""+num+": suspected out of range - actual "+typ, "Invalid ID",};
+	            	Main.sql.psupdate("INSERT INTO `bout_mob_log` (`level`, `mobinfo`, `error`, `date`)VALUES (?, ?, ?, now())", value);
+					return;
+				}
+				if (this.Moblist[0][num]!=typ) {
+					int expectedTyp = this.Moblist[0][num];
+					String [] value = {""+MapValues[1], ""+num+": suspected "+expectedTyp+" - actual "+typ, "Mismatch ID",};
+	            	Main.sql.psupdate("INSERT INTO `bout_mob_log` (`level`, `mobinfo`, `error`, `date`)VALUES (?, ?, ?, now())", value);
+					typ = expectedTyp;
+				}
+				if (this.Mobkilled[num]==-1 && this.Moblist[1][num]!=2) {
+					String [] value = {""+MapValues[1], ""+num+": suspected "+typ+" - actual "+typ, "already killed",};
 	            	Main.sql.psupdate("INSERT INTO `bout_mob_log` (`level`, `mobinfo`, `error`, `date`)VALUES (?, ?, ?, now())", value);
 	            	return;
-	    		}
-    		}
+				}
+			}
     	}catch (Exception e){debug(e.getMessage());}
     	if (0<=killedby && killedby<8)
         	this.MobKill[killedby]++;
