@@ -1,0 +1,17 @@
+[Unit]
+Description=BOUT-EAGLE BotsServer (Python)
+After=network.target
+
+[Service]
+Type=simple
+User=botsserver
+Group=botsserver
+WorkingDirectory=/opt/bout-eagle/botsserver
+EnvironmentFile=/opt/bout-eagle/botsserver/.env
+ExecStart=/usr/bin/python3.12 -m botsserver.server --config /opt/bout-eagle/botsserver/config/botsserver.yaml
+Restart=on-failure
+RestartSec=3
+LimitNOFILE=65535
+
+[Install]
+WantedBy=multi-user.target

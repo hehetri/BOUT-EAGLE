@@ -1,0 +1,17 @@
+[Unit]
+Description=BOUT-EAGLE RelayServer (Python)
+After=network.target
+
+[Service]
+Type=simple
+User=relayserver
+Group=relayserver
+WorkingDirectory=/opt/bout-eagle/relay_server
+EnvironmentFile=/opt/bout-eagle/relay_server/.env
+ExecStart=/usr/bin/python3.12 -m relay_server.server --config /opt/bout-eagle/relay_server/config/relay_server.yaml
+Restart=on-failure
+RestartSec=3
+LimitNOFILE=65535
+
+[Install]
+WantedBy=multi-user.target

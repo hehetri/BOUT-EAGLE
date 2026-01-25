@@ -1,0 +1,17 @@
+[Unit]
+Description=BOUT-EAGLE LoginServer (Python)
+After=network.target
+
+[Service]
+Type=simple
+User=loginserver
+Group=loginserver
+WorkingDirectory=/opt/bout-eagle/loginserver
+EnvironmentFile=/opt/bout-eagle/loginserver/.env
+ExecStart=/usr/bin/python3.12 -m loginserver.server --config /opt/bout-eagle/loginserver/config/loginserver.yaml
+Restart=on-failure
+RestartSec=3
+LimitNOFILE=65535
+
+[Install]
+WantedBy=multi-user.target

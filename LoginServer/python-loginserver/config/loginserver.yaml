@@ -1,0 +1,22 @@
+environment: prod
+protocol:
+  listen_host: 0.0.0.0
+  listen_port: 53699
+  read_timeout_seconds: 10
+  write_timeout_seconds: 10
+  use_crypto_table: false
+database:
+  dsn: postgresql://postgres:postgres@127.0.0.1:5432/bouteagle
+  min_size: 2
+  max_size: 20
+  command_timeout: 5
+rate_limit:
+  max_attempts: 8
+  window_seconds: 60
+  block_seconds: 300
+observability:
+  json_logs: true
+  log_level: INFO
+  prometheus_host: 0.0.0.0
+  prometheus_port: 9102
+  enable_tracing: false
