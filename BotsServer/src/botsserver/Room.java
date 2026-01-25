@@ -443,7 +443,6 @@ public class Room {
     				else {
     					String [] value = {""+MapValues[1], ""+num+": suspected unknown - actual "+typ, "Unknown ID",};
     	            	Main.sql.psupdate("INSERT INTO `bout_mob_log` (`level`, `mobinfo`, `error`, `date`)VALUES (?, ?, ?, now())", value);
-    					hackdetected(id, "[Debug]: Unknown mob id received!");
     					return;
     				}
     			}
