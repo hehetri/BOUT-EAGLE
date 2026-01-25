@@ -1,0 +1,311 @@
+ٿƮ ༺16 01(""â"") ũƮ"													
+;	2005/10/07													
+;														
+;	[   ]													
+	90													
+;														
+;	[â]													
+;	INDEX	 index												
+	0	144												
+	1	147												
+	2	148												
+	3	150												
+	4	151												
+	5	144												
+	6	144												
+	7	148												
+	8	149
+	9	148
+	10	148
+	11	150
+	12	148
+	13	148
+	14	148
+	15	144
+	16	144
+	17	144
+	18	149
+	19	150
+	20	149
+	21	150
+	22	-1
+	23	148
+	24	148
+	25	148
+	26	148
+	27	-1
+	28	84
+	29	156
+	30	148
+	31	152
+	32	148
+	33	148
+	34	149
+	35	149
+	36	148
+	37	148
+	38	145
+	39	145
+	40	145
+	41	145
+	42	145
+	43	145
+	44	145
+	45	145
+	46	83
+	47	153
+	48	153
+	49	85
+	50	82
+	51	144
+	52	-1
+	53	144
+	54	144
+	55	149
+	56	148
+	57	148
+	58	153
+	59	153
+	60	153
+	61	155
+	62	155
+	63	156
+	64	-1
+	65	145
+	66	145
+	67	145
+	68	-1
+	69	157
+	70	154
+	71	155
+	72	153
+	73	153
+	74	82
+	75	82
+	76	84
+	77	85
+	78	-1
+	79	-1
+	80	-1
+	81	-1
+	82	151
+	83	150
+	84	155
+	85	155
+	86	156
+	87	-1
+	88	158												
+	89	28												
+;														
+;														
+;	[block ]													
+	8													
+;														
+;	[01 block]													
+;	"info 01 :  rect (l,t,r,b)"													
+;	left	top	right	bottom										
+	15	30	44	0										
+;	info 02 :    (valid spawn array)													
+;	(count)	1	2	3	4	5	6	7	8	9	10	11	12	13
+	5	0	1	2	3	4								
+;	info 03 : Ȱ   (rebirth spawn array)													
+;	(count)	1	2	3	4	5	6	7	8	9	10	11	12	13
+	0													
+;	info 04 : Ŭǽ (trigger spawn array)													
+;	(count)	1	2	3	4	5	6	7	8	9	10	11	12	13
+	1	0												
+;	info 05 : VIP													
+;	(count)	1	2	3	4	5	6	7	8	9	10	11	12	13
+	0													
+;	info 06 : ܽ(exceptional spawn)(      ׿߸ ) *Ŭǿ    													
+;	(count)	1	2	3	4	5	6	7	8	9	10	11	12	13
+	0													
+;	info 07 : block  λ縻 (text)													
+;	λ縻(text -  ȵ)													
+	These bombs are programmed to explode in 60 seconds! Move quickly and disarm them! 													
+;	info 08 : īƮٿ( Ͻ  ȭ鿡  īƮٿ Ÿ̸  ΰ? 0= 1̻ =ش ʸŭ īƮٿ)													
+;														
+	60													
+;														
+;	[02 block]													
+;	"info 01 :  rect (l,t,r,b)"													
+;	left	top	right	bottom										
+	15	30	44	0										
+;	info 02 :    (valid spawn array)													
+;	(count)	1	2	3	4	5	6	7	8	9	10	11	12	13
+	10	5	6	7	8	9	10	11	12	13	14			
+;	info 03 : Ȱ   (rebirth spawn array)													
+;	(count)	1	2	3	4	5	6	7	8	9	10	11	12	13
+	0													
+;	info 04 : Ŭǽ (trigger spawn array)													
+;	(count)	1	2	3	4	5	6	7	8	9	10	11	12	13
+	2	5	6											
+;	info 05 : VIP													
+;	(count)	1	2	3	4	5	6	7	8	9	10	11	12	13
+	0													
+;	info 06 : ܽ(exceptional spawn)(      ׿߸ ) *Ŭǿ    													
+;	(count)	1	2	3	4	5	6	7	8	9	10	11	12	13
+	2	9	12											
+;	info 07 : block  λ縻 (text)													
+;	λ縻(text -  ȵ)													
+	Find and destroy 2 bombs! 													
+;	info 08 : īƮٿ( Ͻ  ȭ鿡  īƮٿ Ÿ̸  ΰ? 0= 1̻ =ش ʸŭ īƮٿ)													
+;														
+	60													
+
+
+;	[03 block]													
+;	"info 01 :  rect (l,t,r,b)"													
+;	left	top	right	bottom										
+	15	30	44	0										
+;	info 02 :    (valid spawn array)													
+;	(count)	1	2	3	4	5	6	7	8	9	10	11	12	13
+	11	27	28	29	30	31	32	33	34	35	36	37		
+;	info 03 : Ȱ   (rebirth spawn array)													
+;	(count)	1	2	3	4	5	6	7	8	9	10	11	12	13
+	0													
+;	info 04 : Ŭǽ (trigger spawn array)													
+;	(count)	1	2	3	4	5	6	7	8	9	10	11	12	13
+	1	31												
+;	info 05 : VIP													
+;	(count)	1	2	3	4	5	6	7	8	9	10	11	12	13
+	0													
+;	info 06 : ܽ(exceptional spawn)(      ׿߸ ) *Ŭǿ    													
+;	(count)	1	2	3	4	5	6	7	8	9	10	11	12	13
+	2	28	29											
+;	info 07 : block  λ縻 (text)													
+;	λ縻(text -  ȵ)													
+	Another Macho-Z Clone! 													
+;	info 08 : īƮٿ( Ͻ  ȭ鿡  īƮٿ Ÿ̸  ΰ? 0= 1̻ =ش ʸŭ īƮٿ)													
+;														
+	0													
+
+;	[04 block]													
+;	"info 01 :  rect (l,t,r,b)"													
+;	left	top	right	bottom										
+	15	30	44	0										
+;	info 02 :    (valid spawn array)													
+;	(count)	1	2	3	4	5	6	7	8	9	10	11	12	13
+	13	38	39	40	41	42	43	44	45	46	47	48	49	50
+;	info 03 : Ȱ   (rebirth spawn array)													
+;	(count)	1	2	3	4	5	6	7	8	9	10	11	12	13
+	0													
+;	info 04 : Ŭǽ (trigger spawn array)													
+;	(count)	1	2	3	4	5	6	7	8	9	10	11	12	13
+	8	38	39	40	41	42	43	44	45					
+;	info 05 : VIP													
+;	(count)	1	2	3	4	5	6	7	8	9	10	11	12	13
+	0													
+;	info 06 : ܽ(exceptional spawn)(      ׿߸ ) *Ŭǿ    													
+;	(count)	1	2	3	4	5	6	7	8	9	10	11	12	13
+	5	47	48	46	49	50								
+;	info 07 : block  λ縻 (text)													
+;	λ縻(text -  ȵ)													
+	Sensors show 8 more bombs, look for them!													
+;	info 08 : īƮٿ( Ͻ  ȭ鿡  īƮٿ Ÿ̸  ΰ? 0= 1̻ =ش ʸŭ īƮٿ)													
+;														
+	60													
+
+;	[05 block]														
+;	"info 01 :  rect (l,t,r,b)"														
+;	left	top	right	bottom											
+	15	30	44	0											
+;	info 02 :    (valid spawn array)														
+;	(count)	1	2	3	4	5	6	7	8	9	10	11	12	13	14
+	14	51	52	53	54	55	56	57	58	59	60	61	62	63	64
+;	info 03 : Ȱ   (rebirth spawn array)														
+;	(count)	1	2	3	4	5	6	7	8	9	10	11	12	13	
+	0														
+;	info 04 : Ŭǽ (trigger spawn array)														
+;	(count)	1	2	3	4	5	6	7	8	9	10	11	12	13	
+	4	51	52	53	54										
+;	info 05 : VIP														
+;	(count)	1	2	3	4	5	6	7	8	9	10	11	12	13	
+	0														
+;	info 06 : ܽ(exceptional spawn)(      ׿߸ ) *Ŭǿ    														
+;	(count)	1	2	3	4	5	6	7	8	9	10	11	12	13	
+	0														
+;	info 07 : block  λ縻 (text)														
+;	λ縻(text -  ȵ)														
+	Locate and destroy 3 bombs!														
+;	info 08 : īƮٿ( Ͻ  ȭ鿡  īƮٿ Ÿ̸  ΰ? 0= 1̻ =ش ʸŭ īƮٿ)														
+;															
+	60														
+
+;	[06 block]														
+;	"info 01 :  rect (l,t,r,b)"														
+;	left	top	right	bottom											
+	15	30	44	0											
+;	info 02 :    (valid spawn array)														
+;	(count)	1	2	3	4	5	6	7	8	9	10	11	12	13	
+	13	65	66	67	68	69	70	71	72	73	74	75	76	77
+;	info 03 : Ȱ   (rebirth spawn array)													
+;	(count)	1	2	3	4	5	6	7	8	9	10	11	12	13
+	0													
+;	info 04 : Ŭǽ (trigger spawn array)													
+;	(count)	1	2	3	4	5	6	7	8	9	10	11	12	13
+	3	65	66	67										
+;	info 05 : VIP													
+;	(count)	1	2	3	4	5	6	7	8	9	10	11	12	13
+	1	69												
+;	info 06 : ܽ(exceptional spawn)(      ׿߸ ) *Ŭǿ    													
+;	(count)	1	2	3	4	5	6	7	8	9	10	11	12	13
+	5	69	74	75	76	77								
+;	info 07 : block  λ縻 (text)													
+;	λ縻(text -  ȵ)													
+	Destroy the last 3 bombs! 													
+;	info 08 : īƮٿ( Ͻ  ȭ鿡  īƮٿ Ÿ̸  ΰ? 0= 1̻ =ش ʸŭ īƮٿ)													
+;														
+	60													
+
+;	[07 block]													
+;	"info 01 :  rect (l,t,r,b)"													
+;	left	top	right	bottom										
+	15	30	44	0										
+;	info 02 :    (valid spawn array)													
+;	(count)	1	2	3	4	5	6	7	8	9	10	11	12	13
+	11	69	78	79	80	81	82	83	84	85	86	87		
+;	info 03 : Ȱ   (rebirth spawn array)													
+;	(count)	1	2	3	4	5	6	7	8	9	10	11	12	13
+	0													
+;	info 04 : Ŭǽ (trigger spawn array)													
+;	(count)	1	2	3	4	5	6	7	8	9	10	11	12	13
+	1	69												
+;	info 05 : VIP													
+;	(count)	1	2	3	4	5	6	7	8	9	10	11	12	13
+	1	69												
+;	info 06 : ܽ(exceptional spawn)(      ׿߸ ) *Ŭǿ    													
+;	(count)	1	2	3	4	5	6	7	8	9	10	11	12	13
+	0													
+;	info 07 : block  λ縻 (text)													
+;	λ縻(text -  ȵ)													
+	It's a Kowbat clone, but still powerful!													
+;	info 08 : īƮٿ( Ͻ  ȭ鿡  īƮٿ Ÿ̸  ΰ? 0= 1̻ =ش ʸŭ īƮٿ)													
+;														
+	0													
+
+;	[08 block]													
+;	"info 01 :  rect (l,t,r,b)"													
+;	left	top	right	bottom										
+	15	30	44	0										
+;	info 02 :    (valid spawn array)													
+;	(count)	1	2	3	4	5	6	7	8	9	10	11	12	13
+	1	88												
+;	info 03 : Ȱ   (rebirth spawn array)													
+;	(count)	1	2	3	4	5	6	7	8	9	10	11	12	13
+	0													
+;	info 04 : Ŭǽ (trigger spawn array)													
+;	(count)	1	2	3	4	5	6	7	8	9	10	11	12	13
+	1	88												
+;	info 05 : VIP													
+;	(count)	1	2	3	4	5	6	7	8	9	10	11	12	13
+	0													
+;	info 06 : ܽ(exceptional spawn)(      ׿߸ ) *Ŭǿ    													
+;	(count)	1	2	3	4	5	6	7	8	9	10	11	12	13
+	0													
+;	info 07 : block  λ縻 (text)													
+;	λ縻(text -  ȵ)													
+	Break the box and get out!													
+;	info 08 : īƮٿ( Ͻ  ȭ鿡  īƮٿ Ÿ̸  ΰ? 0= 1̻ =ش ʸŭ īƮٿ)													
+;														
+	0													

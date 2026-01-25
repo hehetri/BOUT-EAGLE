@@ -1,0 +1,194 @@
+Ʈ ༺10 01(<ٿ>ĸ) ũƮ													
+;	2005/01/03													
+;														
+;	[   ]													
+	52													
+;														
+;	[06 ༺ 01     ]													
+;	INDEX	 index												
+	0	70												
+	1	70												
+	2	71												
+	3	71												
+	4	-1												
+	5	-1												
+	6	-1												
+	7	-1												
+	8	-1
+	9	-1
+	10	-1
+	11	-1
+	12	73
+	13	73
+	14	73
+	15	73
+	16	-1
+	17	-1
+	18	-1
+	19	-1
+	20	-1
+	21	-1
+	22	-1
+	23	-1
+	24	77
+	25	79
+	26	-1
+	27	80
+	28	-1
+	29	-1
+	30	-1
+	31	-1
+	32	-1
+	33	-1
+	34	-1
+	35	-1
+	36	-1
+	37	-1
+	38	-1
+	39	-1
+	40	-1												
+	41	74												
+	42	84												
+	43	74												
+	44	77												
+	45	78												
+	46	77												
+	47	86												
+	48	-1												
+	49	-1												
+	50	-1												
+	51	-1												
+;														
+;	[block ]													
+	5													
+;														
+;	[01 block]													
+;	"info 01 :  rect (l,t,r,b)"													
+;	left	top	right	bottom										
+	151	66	219	0										
+;	info 02 :    (valid spawn array)													
+;	(count)	1	2	3	4	5	6	7	8	9	10	11	12	13
+	4	0	1	2	3									
+;	info 03 : Ȱ   (rebirth spawn array)													
+;	(count)	1	2	3	4	5	6	7	8	9	10	11	12	13
+	0													
+;	info 04 : Ŭǽ (trigger spawn array)													
+;	(count)	1	2	3	4	5	6	7	8	9	10	11	12	13
+	4	0	1	2	3									
+;	info 05 : VIP													
+;	(count)	1	2	3	4	5	6	7	8	9	10	11	12	13
+	0													
+;	info 06 : ܽ(exceptional spawn)(      ׿߸ ) *Ŭǿ    													
+;	(count)	1	2	3	4	5	6	7	8	9	10	11	12	13
+	0													
+;	info 07 : block  λ縻 (text)													
+;	λ縻(text -  ȵ)													
+	...... ......! .... ...... ...... ..........!													
+;	info 08 : īƮٿ( Ͻ  ȭ鿡  īƮٿ Ÿ̸  ΰ? 0= 1̻ =ش ʸŭ īƮٿ)													
+;														
+	0													
+;														
+;	[02 block]													
+;	"info 01 :  rect (l,t,r,b)"													
+;	left	top	right	bottom										
+	151	66	219	0										
+;	info 02 :    (valid spawn array)													
+;	(count)	1	2	3	4	5	6	7	8	9	10	11	12	13
+	4	12	13	14	15									
+;	info 03 : Ȱ   (rebirth spawn array)													
+;	(count)	1	2	3	4	5	6	7	8	9	10	11	12	13
+	0													
+;	info 04 : Ŭǽ (trigger spawn array)													
+;	(count)	1	2	3	4	5	6	7	8	9	10	11	12	13
+	4	12	13	14	15									
+;	info 05 : VIP													
+;	(count)	1	2	3	4	5	6	7	8	9	10	11	12	13
+	0													
+;	info 06 : ܽ(exceptional spawn)(      ׿߸ ) *Ŭǿ    													
+;	(count)	1	2	3	4	5	6	7	8	9	10	11	12	13
+	0													
+;	info 07 : block  λ縻 (text)													
+;	λ縻(text -  ȵ)													
+														
+;	info 08 : īƮٿ( Ͻ  ȭ鿡  īƮٿ Ÿ̸  ΰ? 0= 1̻ =ش ʸŭ īƮٿ)													
+;														
+	0													
+;														
+;	[03 block]													
+;	"info 01 :  rect (l,t,r,b)"													
+;	left	top	right	bottom										
+	151	66	219	0										
+;	info 02 :    (valid spawn array)													
+;	(count)	1	2	3	4	5	6	7	8	9	10	11	12	13
+	4	24	25	26	27									
+;	info 03 : Ȱ   (rebirth spawn array)													
+;	(count)	1	2	3	4	5	6	7	8	9	10	11	12	13
+	0													
+;	info 04 : Ŭǽ (trigger spawn array)													
+;	(count)	1	2	3	4	5	6	7	8	9	10	11	12	13
+	4	24	25	26	27									
+;	info 05 : VIP													
+;	(count)	1	2	3	4	5	6	7	8	9	10	11	12	13
+	0													
+;	info 06 : ܽ(exceptional spawn)(      ׿߸ ) *Ŭǿ    													
+;	(count)	1	2	3	4	5	6	7	8	9	10	11	12	13
+	0													
+;	info 07 : block  λ縻 (text)													
+;	λ縻(text -  ȵ)													
+														
+;	info 08 : īƮٿ( Ͻ  ȭ鿡  īƮٿ Ÿ̸  ΰ? 0= 1̻ =ش ʸŭ īƮٿ)													
+;														
+	0													
+;														
+;	[04 block]													
+;	"info 01 :  rect (l,t,r,b)"													
+;	left	top	right	bottom										
+	151	66	219	0										
+;	info 02 :    (valid spawn array)													
+;	(count)	1	2	3	4	5	6	7	8	9	10	11	12	13
+	4	40	41	42	43									
+;	info 03 : Ȱ   (rebirth spawn array)													
+;	(count)	1	2	3	4	5	6	7	8	9	10	11	12	13
+	0													
+;	info 04 : Ŭǽ (trigger spawn array)													
+;	(count)	1	2	3	4	5	6	7	8	9	10	11	12	13
+	4	40	41	42	43									
+;	info 05 : VIP													
+;	(count)	1	2	3	4	5	6	7	8	9	10	11	12	13
+	0													
+;	info 06 : ܽ(exceptional spawn)(      ׿߸ ) *Ŭǿ    													
+;	(count)	1	2	3	4	5	6	7	8	9	10	11	12	13
+	0													
+;	info 07 : block  λ縻 (text)													
+;	λ縻(text -  ȵ)													
+														
+;	info 08 : īƮٿ( Ͻ  ȭ鿡  īƮٿ Ÿ̸  ΰ? 0= 1̻ =ش ʸŭ īƮٿ)													
+;														
+	0													
+;														
+;	[05 block]													
+;	"info 01 :  rect (l,t,r,b)"													
+;	left	top	right	bottom										
+	151	66	219	0										
+;	info 02 :    (valid spawn array)													
+;	(count)	1	2	3	4	5	6	7	8	9	10	11	12	13
+	4	44	45	46	47									
+;	info 03 : Ȱ   (rebirth spawn array)													
+;	(count)	1	2	3	4	5	6	7	8	9	10	11	12	13
+	0													
+;	info 04 : Ŭǽ (trigger spawn array)													
+;	(count)	1	2	3	4	5	6	7	8	9	10	11	12	13
+	4	44	45	46	47									
+;	info 05 : VIP													
+;	(count)	1	2	3	4	5	6	7	8	9	10	11	12	13
+	0													
+;	info 06 : ܽ(exceptional spawn)(      ׿߸ ) *Ŭǿ    													
+;	(count)	1	2	3	4	5	6	7	8	9	10	11	12	13
+	0													
+;	info 07 : block  λ縻 (text)													
+;	λ縻(text -  ȵ)													
+														
+;	info 08 : īƮٿ( Ͻ  ȭ鿡  īƮٿ Ÿ̸  ΰ? 0= 1̻ =ش ʸŭ īƮٿ)													
+;														
+	0													
+;														
