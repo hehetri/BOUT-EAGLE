@@ -12,6 +12,9 @@ public class ChatCommandParserTest {
 		command = ChatCommandParser.extractCommand("Player @win", "Player");
 		if (!"win".equals(command))
 			throw new RuntimeException("Expected to parse name-prefixed command.");
+		command = ChatCommandParser.extractCommand("[Room] Player says @exit", "Player");
+		if (!"exit".equals(command))
+			throw new RuntimeException("Expected to parse command within chat text.");
 		command = ChatCommandParser.extractCommand("Hello world", "Player");
 		if (command != null)
 			throw new RuntimeException("Expected no command for non-command message.");

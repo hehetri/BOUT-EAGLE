@@ -12,17 +12,9 @@ public final class ChatCommandParser {
 			return null;
 		if (trimmed.startsWith("@"))
 			return trimmed.substring(1).trim();
-		int bracketIndex = trimmed.lastIndexOf(']');
-		if (bracketIndex != -1 && bracketIndex + 1 < trimmed.length()){
-			String after = trimmed.substring(bracketIndex + 1).trim();
-			if (after.startsWith("@"))
-				return after.substring(1).trim();
-		}
-		if (botName != null && !botName.isEmpty() && trimmed.startsWith(botName)){
-			String after = trimmed.substring(botName.length()).trim();
-			if (after.startsWith("@"))
-				return after.substring(1).trim();
-		}
+		int atIndex = trimmed.indexOf('@');
+		if (atIndex != -1 && atIndex + 1 < trimmed.length())
+			return trimmed.substring(atIndex + 1).trim();
 		return null;
 	}
 }
