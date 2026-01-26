@@ -18,5 +18,14 @@ public class ChatCommandParserTest {
 		command = ChatCommandParser.extractCommand("Hello world", "Player");
 		if (command != null)
 			throw new RuntimeException("Expected no command for non-command message.");
+		command = ChatCommandParser.extractCommand("Contact me at foo@bar.com", "Player");
+		if (command != null)
+			throw new RuntimeException("Expected no command for email-like message.");
+		command = ChatCommandParser.extractCommand("@", "Player");
+		if (command != null)
+			throw new RuntimeException("Expected no command for bare at-sign.");
+		command = ChatCommandParser.extractCommand("Hello @ world", "Player");
+		if (command != null)
+			throw new RuntimeException("Expected no command when @ lacks command text.");
 	}
 }

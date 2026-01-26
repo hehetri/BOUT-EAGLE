@@ -10,11 +10,23 @@ public final class ChatCommandParser {
 		String trimmed = message.trim();
 		if (trimmed.isEmpty())
 			return null;
-		if (trimmed.startsWith("@"))
-			return trimmed.substring(1).trim();
-		int atIndex = trimmed.indexOf('@');
-		if (atIndex != -1 && atIndex + 1 < trimmed.length())
-			return trimmed.substring(atIndex + 1).trim();
+		for (int i = 0; i < trimmed.length(); i++)
+		{
+			if (trimmed.charAt(i) != '@')
+				continue;
+			if (i > 0 && isWordChar(trimmed.charAt(i - 1)))
+				continue;
+			if (i + 1 >= trimmed.length())
+				continue;
+			if (!isWordChar(trimmed.charAt(i + 1)))
+				continue;
+			return trimmed.substring(i + 1).trim();
+		}
 		return null;
+	}
+
+	private static boolean isWordChar(char value)
+	{
+		return Character.isLetterOrDigit(value) || value == '_';
 	}
 }
