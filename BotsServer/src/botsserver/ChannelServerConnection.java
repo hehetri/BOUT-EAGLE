@@ -626,6 +626,11 @@ public class ChannelServerConnection extends Thread{
                     	bot.GuildRemove(bot.botname);
                     break;
                 }
+                case 0xA627:
+                {
+                	Game.chatCommand(bot, pack);
+                	break;
+                }
                 case 0x672B:
                 {
                 	pack.getInt(2);
