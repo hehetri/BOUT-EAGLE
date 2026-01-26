@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.sql.ResultSet;
 import java.sql.Timestamp;
+import java.time.LocalDate;
+import java.time.ZoneOffset;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
@@ -13,6 +15,9 @@ import java.util.concurrent.TimeUnit;
 * @author Bouteagle
 */
 public class BotClass {
+	private static final int DAILY_REWARD_ITEM_ID = 5010300;
+	private static final int DAILY_REWARD_CHAT_COLOR = 2;
+	private static volatile boolean dailyRewardTableReady = false;
 	private boolean firstlog = true;
 	protected Long lastreply = System.currentTimeMillis();
     protected ScheduledExecutorService executorp = Executors.newScheduledThreadPool(10);
@@ -872,6 +877,100 @@ public class BotClass {
         		sendChatMsg("The Christmas event is live collect tickets, current amount: 0", 2, false, -1);
         }catch (Exception e){}*/
         //event end
+        grantDailyRewardIfEligible();
+    }
+
+    private void grantDailyRewardIfEligible()
+    {
+    	ensureDailyRewardTable();
+    	LocalDate today = LocalDate.now(ZoneOffset.UTC);
+    	LocalDate lastRewardDate = null;
+    	ResultSet rs = sql.psquery("SELECT reward_date FROM `bout_daily_rewards` WHERE `username`=? LIMIT 1", new String[]{account});
+    	try{
+    		if (rs.next()){
+    			java.sql.Date rewardDate = rs.getDate("reward_date");
+    			if (rewardDate != null)
+    				lastRewardDate = rewardDate.toLocalDate();
+    		}
+    		rs.close();
+    	}catch (Exception e){debug("Daily reward lookup failed: "+e);}
+    	if (lastRewardDate != null && !lastRewardDate.isBefore(today))
+    		return;
+    	DailyRewardItem reward = fetchDailyRewardItem(DAILY_REWARD_ITEM_ID);
+    	if (!placeDailyRewardItem(reward)){
+    		sendChatMsg("[Daily Reward] Inventory and stash are full. Clear space and reconnect to claim your reward.", DAILY_REWARD_CHAT_COLOR, false, -1);
+    		return;
+    	}
+    	sql.psupdate("REPLACE INTO `bout_daily_rewards` (`username`, `reward_date`, `updated_at`) VALUES (?, ?, now())",
+    			new String[]{account, today.toString()});
+    	sendChatMsg("[Daily Reward] You received "+reward.name+"!", DAILY_REWARD_CHAT_COLOR, false, -1);
+    }
+
+    private void ensureDailyRewardTable()
+    {
+    	if (dailyRewardTableReady)
+    		return;
+    	synchronized (BotClass.class){
+    		if (dailyRewardTableReady)
+    			return;
+    		sql.psupdate("CREATE TABLE IF NOT EXISTS `bout_daily_rewards` (" +
+    				"`username` VARCHAR(64) NOT NULL PRIMARY KEY, " +
+    				"`reward_date` DATE NOT NULL, " +
+    				"`updated_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP" +
+    				")", new String[]{});
+    		dailyRewardTableReady = true;
+    	}
+    }
+
+    private DailyRewardItem fetchDailyRewardItem(int itemId)
+    {
+    	int time = 0;
+    	String name = "Daily Reward Item";
+    	ResultSet rs = sql.psquery("SELECT `name`, `days` FROM `bout_items` WHERE `id`=? LIMIT 1", new String[]{""+itemId});
+    	try{
+    		if (rs.next()){
+    			time = rs.getInt("days");
+    			name = rs.getString("name");
+    		}
+    		rs.close();
+    	}catch (Exception e){debug("Daily reward item lookup failed: "+e);}
+    	return new DailyRewardItem(itemId, time, name);
+    }
+
+    private boolean placeDailyRewardItem(DailyRewardItem reward)
+    {
+    	for (int i = 0; i<10; i++)
+    		if (inventitems[i]==0){
+    			inventitems[i]=reward.itemId;
+    			if (reward.durationDays>0)
+    				AddItemTime(reward.itemId, i, "item", reward.durationDays);
+    			UpdateInvent();
+    			return true;
+    		}
+    	int stashSlots = stash * 10;
+    	for (int i = 0; i<stashSlots; i++)
+    		if (stasheditems[i]==0){
+    			stasheditems[i]=reward.itemId;
+    			if (reward.durationDays>0)
+    				AddItemTime(reward.itemId, i, "stas", reward.durationDays);
+    			UpdateStash(i / 10);
+    			return true;
+    		}
+    	return false;
+    }
+
+    private static class DailyRewardItem
+    {
+    	private final int itemId;
+    	private final int durationDays;
+    	private final String name;
+
+    	private DailyRewardItem(int itemId, int durationDays, String name)
+    	{
+    		this.itemId = itemId;
+    		this.durationDays = durationDays;
+    		this.name = name;
+    	}
     }
     
     public void WhisperPacket(String Receive, String message, int len)

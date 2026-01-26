@@ -987,6 +987,28 @@ public class Room {
         this.starttime  = System.currentTimeMillis();
         bot[roomowner].RoomsPacket(true, new int[]{roommode==0 ? 0 : roommode-1, roommode==0 ? (int)(roomnum/6) : (int)((roomnum-600*(roommode-1))/6)});
 		StartPackets();
+		SendMessage(true, 0, "[Server] Type @help to see all available commands.", 2);
+    }
+
+    public void forceEndMatch(int winnerSlot)
+    {
+    	if (status != 3)
+    		return;
+    	int[] winners = new int[8];
+    	if (roommode == 2){
+    		for (int i = 0; i<8; i++)
+    			if (bot[i]!=null)
+    				winners[i]=1;
+    	} else if (roommode == 1 || roommode == 3){
+    		int team = color[winnerSlot];
+    		for (int i = 0; i<8; i++)
+    			if (bot[i]!=null && color[i]==team)
+    				winners[i]=1;
+    	} else {
+    		if (winnerSlot >= 0 && winnerSlot < 8)
+    			winners[winnerSlot]=1;
+    	}
+    	EndRoom(new int[8], new int[8], 0, winners, false);
     }
     
     protected void StartPackets()

@@ -17,8 +17,6 @@ import java.net.SocketAddress;
 import java.net.URL;
 import java.net.URLConnection;
 import java.nio.ByteBuffer;
-//import java.security.MessageDigest;
-//import java.security.NoSuchAlgorithmException;
 import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -95,7 +93,12 @@ public class LoginServerConnection extends Thread {
 				this.LOGIN_ALLOG = rs.getInt("online");
 				this.LOGIN_RESULT = 0;
 			}
-			boolean properlogin = true;//this.LOGIN_PASSWORD.equals(this.pass);
+			boolean properlogin = false;
+			if (PasswordUtil.isCredentialInputValid(user, pass) && this.LOGIN_PASSWORD != null){
+				properlogin = PasswordUtil.verifyPassword(pass, this.LOGIN_PASSWORD);
+				if (properlogin && PasswordUtil.shouldUpgradePassword(this.LOGIN_PASSWORD))
+					updatePasswordHash(user, pass);
+			}
 //			else if(properlogin){
 //				user2 = new String[11];
 //				user2[0] = this.user;
@@ -281,7 +284,13 @@ public class LoginServerConnection extends Thread {
 			debug("Error (updateAccount) : " + e.getMessage());
 		}
 	}
-	
+
+	private void updatePasswordHash(String username, String password)
+	{
+		String hashed = PasswordUtil.hashPassword(password);
+		Main.sql.psupdate("UPDATE `bout_users` SET `password`=? WHERE `username`=?", new String[]{hashed, username});
+	}
+
 	protected String[] openpage(String page)
 	{
 		List<String> linelist = new ArrayList<String>();

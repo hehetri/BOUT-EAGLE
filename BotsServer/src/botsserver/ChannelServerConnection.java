@@ -150,8 +150,9 @@ public class ChannelServerConnection extends Thread{
                 	@SuppressWarnings("unused")int length=pack.getInt(2);
                     boolean guild = pack.getInt(2)==5;
                     String msg = pack.getString(0, pack.getLen(), false);
-            		if ((""+msg.charAt(3+bot.botname.length())).equals("@"))
-            			lobby.standard.ParseCommands(bot, new String[]{msg.substring((4+bot.botname.length()), msg.length())});
+                    int commandIndex = 3 + bot.botname.length();
+            		if (msg.length() > commandIndex && msg.charAt(commandIndex) == '@')
+            			lobby.standard.ParseChatCommand(bot, msg.substring(commandIndex + 1));
             		else if (guild)
             			bot.sendGuildMsg("["+bot.botname+"]"+msg.substring(2+bot.botname.length()));
             		else
