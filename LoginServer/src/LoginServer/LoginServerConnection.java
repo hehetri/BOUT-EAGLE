@@ -94,11 +94,8 @@ public class LoginServerConnection extends Thread {
 				this.LOGIN_RESULT = 0;
 			}
 			boolean properlogin = false;
-			if (PasswordUtil.isCredentialInputValid(user, pass) && this.LOGIN_PASSWORD != null){
-				properlogin = PasswordUtil.verifyPassword(pass, this.LOGIN_PASSWORD);
-				if (properlogin && PasswordUtil.shouldUpgradePassword(this.LOGIN_PASSWORD))
-					updatePasswordHash(user, pass);
-			}
+				if (PasswordUtil.isCredentialInputValid(user, pass) && this.LOGIN_PASSWORD != null)
+					properlogin = PasswordUtil.verifyPassword(pass, this.LOGIN_PASSWORD);
 //			else if(properlogin){
 //				user2 = new String[11];
 //				user2[0] = this.user;
