@@ -7,6 +7,8 @@ public final class Game {
 	{
 		if (bot == null || packet == null || bot.room == null)
 			return;
+		packet.getInt(2);
+		packet.getInt(2);
 		String message = packet.getString(0, packet.getLen(), false).trim();
 		if (message.isEmpty())
 			return;
