@@ -147,18 +147,36 @@ public class ChannelServerConnection extends Thread{
                 case 0x1A27:
                 {
                 	pack.getInt(2);
-                	@SuppressWarnings("unused")int length=pack.getInt(2);
-                    boolean guild = pack.getInt(2)==5;
-                    String msg = pack.getString(0, pack.getLen(), false);
-            		if ((""+msg.charAt(3+bot.botname.length())).equals("@"))
-            			lobby.standard.ParseCommands(bot, new String[]{msg.substring((4+bot.botname.length()), msg.length())});
-            		else if (guild)
-            			bot.sendGuildMsg("["+bot.botname+"]"+msg.substring(2+bot.botname.length()));
-            		else
-            			if (bot.muted(false)==0 && bot.parsemessage(msg.substring(2+bot.botname.length())))
-            				bot.sendChatMsg("["+bot.botname+"]"+msg.split("]", 2)[1], !bot.announce ? 0 : bot.gm==100 ? 4 : bot.gm==150 ? 1 : bot.gm>199 ? 2 : 0, true, -1);
-            			else
-            				bot.sendChatMsg("[Server] you are muted for "+(bot.muted==-1 ? "forever" : bot.muted+" seconds."),2,false,-1);
+                	int length = pack.getInt(2);
+                	pack.getInt(2);
+                    int msgLength = Math.min(length, pack.getLen());
+                    String msg = pack.getString(0, msgLength, false);
+                    if (msg == null)
+                    	break;
+                    msg = msg.trim();
+                    if (msg.isEmpty())
+                    	break;
+                    boolean inRoom = bot.room != null && bot.roomnum != -1;
+                    if (msg.startsWith("/"))
+                    {
+                    	String command = msg.substring(1).trim();
+                    	if (command.isEmpty())
+                    		break;
+                    	if (inRoom)
+                    		bot.room.ParseChatCommand(bot, command);
+                    	else
+                    		lobby.standard.ParseChatCommand(bot, command);
+                    	break;
+                    }
+                    if (bot.muted(false)!=0 || !bot.parsemessage(msg))
+                    {
+                    	bot.sendChatMsg("[Server] you are muted for "+(bot.muted==-1 ? "forever" : bot.muted+" seconds."),2,false,-1);
+                    	break;
+                    }
+                    if (inRoom)
+                    	bot.room.SendMessage(true, 0, "["+bot.botname+"]"+msg, 0);
+                    else
+                    	bot.sendChatMsg("["+bot.botname+"]"+msg, !bot.announce ? 0 : bot.gm==100 ? 4 : bot.gm==150 ? 1 : bot.gm>199 ? 2 : 0, true, -1);
                     break;
                 }
                 case 0x442B:
@@ -625,6 +643,11 @@ public class ChannelServerConnection extends Thread{
                     	bot.GuildRemove(bot.botname);
                     break;
                 }
+                case 0xA627:
+                {
+                	Game.chatCommand(bot, pack);
+                	break;
+                }
                 case 0x672B:
                 {
                 	pack.getInt(2);
@@ -737,6 +760,10 @@ public class ChannelServerConnection extends Thread{
                 	break;
                 }
                 case 0x3D2B:
+                {
+                	break;
+                }
+                case 0x3F2B:
                 {
                 	break;
                 }

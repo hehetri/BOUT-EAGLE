@@ -334,40 +334,7 @@ public class Standard {
 	
 	public void ParseRoomCommands(BotClass bot, String command)
 	{
-		if (bot.roomnum==-1)
-			return;
-		String[] pcommand=command.split("\\s+");
-		if (pcommand[0].equalsIgnoreCase("help"))
-		{
-			if(bot.roomnum==bot.room.roomowner){
-				bot.sendChatMsg("@rm <name> transfer roommaster to specified botname.", 2, false, -1);
-				bot.sendChatMsg("@kick <name> kick player from room.", 2, false, -1);
-			}
-			bot.sendChatMsg("@suicide kills your bot.", 2, false, -1);
-			bot.sendChatMsg("@exit exit current room.", 2, false, -1);
-		}
-		if (pcommand[0].equalsIgnoreCase("exit"))
-			if (bot.room.Exit(bot.roomnum, false))
-            	bot.RemoveRoom(bot.room);
-		if (pcommand[0].equalsIgnoreCase("suicide"))
-			bot.room.Dead(bot.roomnum, 10);
-		if (pcommand[0].equalsIgnoreCase("rm"))
-			if(bot.roomnum==bot.room.roomowner)
-				for (int i = 0; i<8; i++)
-					if(bot.room.bot[i]!=null && bot.room.bot[i].botname.equalsIgnoreCase(pcommand[1])){
-						bot.room.roomowner=i;
-						bot.room.UserInfoPacket(-1);
-						break;
-					}
-		if (pcommand[0].equalsIgnoreCase("kick"))
-			if(bot.roomnum==bot.room.roomowner)
-				for (int i = 0; i<8; i++)
-					if(bot.room.bot[i]!=null && bot.room.bot[i].botname.equalsIgnoreCase(pcommand[1]))
-						if (bot.room.Exit(i, true)){
-                    		bot.RemoveRoom(bot.room);
-                    		break;
-						}
-				
+		ParseChatCommand(bot, command);
 	}
 	
 	protected boolean isNumeric(String str)
@@ -377,114 +344,40 @@ public class Standard {
 	
 	public void ParseCommands(BotClass bot, String[] command)
 	{
-		command=command[0].split("\\s+");
-		if (command[0].equals("help"))
+		if (command == null || command.length == 0)
+			return;
+		ParseChatCommand(bot, command[0]);
+	}
+
+	public void ParseChatCommand(BotClass bot, String commandLine)
+	{
+		if (commandLine == null)
+			return;
+		commandLine = commandLine.trim();
+		if (commandLine.isEmpty())
+			return;
+		String[] command = commandLine.split("\\s+");
+		String action = command[0].toLowerCase();
+		boolean inRoom = bot.room != null && bot.roomnum != -1;
+		boolean activeMatch = inRoom && CommandRules.isActiveMatch(bot.room.status);
+		if (action.equals("help"))
 		{
-			if (command.length==1){
-				bot.sendChatMsg("-------Showing all available commands-------", 1, false, -1);
-				if (bot.gm>249) {
-					bot.sendChatMsg("@dropreload              - need admin rights", 2, false, -1);
-				}
-				if (bot.gm>199){
-            		bot.sendChatMsg("@coins <amount>          - need supergm rights", 2, false, -1);
-            		bot.sendChatMsg("@item <itemid>           - need supergm rights", 2, false, -1);
-            		bot.sendChatMsg("@gigas <amount>          - need supergm rights", 2, false, -1);
-            		bot.sendChatMsg("@itemname <itemid>       - need supergm rights", 2, false, -1);
-            		bot.sendChatMsg("@itemid <itemname> <page>- need supergm rights", 2, false, -1);
-            		bot.sendChatMsg("@statboost <on|off>      - need supergm rights", 2, false, -1);
-            		bot.sendChatMsg("@iplookup <name> <-u>    - need supergm rights", 2, false, -1);
-            	}
-            	if(bot.gm>149){
-            		bot.sendChatMsg("@kick <charactername>       - need gm rights", 4, false, -1);
-            		bot.sendChatMsg("@delinvent <part|0 for all> - need gm rights", 4, false, -1);
-            		bot.sendChatMsg("@destroyroom <number> <mode>- need gm rights", 4, false, -1);
-            		bot.sendChatMsg("@bruteforce <number> <mode> - need gm rights", 4, false, -1);
-            		bot.sendChatMsg("@ban <player> <time> <reason>- need gm rights", 4, false, -1);
-            		bot.sendChatMsg("@lookup <name> <-u>         - need gm rights", 4, false, -1);
-            	}
-            	if(bot.gm>99){
-            		bot.sendChatMsg("@mute <player> <time>       - need mod rights", 1, false, -1);
-            		bot.sendChatMsg("@getTickets <page>          - need mod rights", 1, false, -1);
-            		bot.sendChatMsg("@solveTicket <number>       - need mod rights", 1, false, -1);
-            		bot.sendChatMsg("@announce <on|off>          - need mod rights", 1, false, -1);
-            	}
-				bot.sendChatMsg("@help <command> gives more info about the command.", 2, false, -1);
-            	bot.sendChatMsg("@tags <tag> - all roomtags that are available for use.", 2, false, -1);
-            	bot.sendChatMsg("@ticket <question info> creates a ticket to get help from staff.", 1, false, -1);
-            	return;
-			}
-			bot.sendChatMsg("--------info for command: "+command[1]+"--------", 2, false, -1);
-			if (command[1].equals("dropreload")) {
-				bot.sendChatMsg("By using this command the droplist from the database,", 2, false, -1);
-				bot.sendChatMsg("will be reloaded into memory, will return time spent reloading.", 2, false, -1);
-			}
-			else if (command[1].equals("coins") && bot.gm>199)
-				bot.sendChatMsg("Adds specified amount to your coin balance.", 2, false, -1);
-			else if (command[1].equals("gigas") && bot.gm>199)
-				bot.sendChatMsg("Adds specified amount to your gigas balance.", 2, false, -1);
-			else if (command[1].equals("item") && bot.gm>199)
-				bot.sendChatMsg("Adds the specified item to your inventory.", 2, false, -1);
-			else if (command[1].equals("itemname") && bot.gm>199)
-				bot.sendChatMsg("Returns name of specified itemid if it excists.", 2, false, -1);
-			else if (command[1].equals("item") && bot.gm>199){
-				bot.sendChatMsg("Returns all found similair names to specified name.", 2, false, -1);
-				bot.sendChatMsg("Specify a page name to see the next row of results.", 2, false, -1);}
-			else if (command[1].equals("statboost") && bot.gm>199){
-				bot.sendChatMsg("sets your stats to OP.", 2, false, -1);
-				bot.sendChatMsg("if on or off is not specified the current setting will be inverted.", 2, false, -1);}
-			else if (command[1].equals("kick") && bot.gm>149)
-				bot.sendChatMsg("Kicks specified player from the server.", 2, false, -1);
-			else if (command[1].equals("delinvent") && bot.gm>149){
-				bot.sendChatMsg("Removes item from specified slot in inventory.", 2, false, -1);
-				bot.sendChatMsg("if specified slot is 0 all items in inventory will be removed.", 2, false, -1);}
-			else if (command[1].equals("destroyroom") && bot.gm>149){
-				bot.sendChatMsg("Destroys specified room.", 2, false, -1);
-				bot.sendChatMsg("Rooms can be specified by number or roomname", 2, false, -1);
-				bot.sendChatMsg("if mode isn't specified sector will be used", 2, false, -1);
-				bot.sendChatMsg("Modes: sector=1, pvp=0, base=2", 2, false, -1);}
-			else if (command[1].equals("bruteforce") && bot.gm>149){
-				bot.sendChatMsg("Joins a room regardless of password.", 2, false, -1);
-				bot.sendChatMsg("Rooms can be specified by number or roomname", 2, false, -1);
-				bot.sendChatMsg("if mode isn't specified sector will be used", 2, false, -1);
-				bot.sendChatMsg("Modes: sector=1, pvp=0, base=2", 2, false, -1);}
-			else if (command[1].equals("ban") && bot.gm>149) {
-				bot.sendChatMsg("bans player for time if time=0 it will unban the player.", 2, false, -1);
-				bot.sendChatMsg("Adding a reason for banning is optional but encouraged!", 2, false, -1);
-			}
-			else if (command[1].equals("mute") && bot.gm>99)
-				bot.sendChatMsg("Mutes player for time if time=0 it will unmute the player.", 2, false, -1);
-			else if (command[1].equalsIgnoreCase("gettickets") && bot.gm>99){
-				bot.sendChatMsg("Gets all open tickets by page.", 2, false, -1);
-				bot.sendChatMsg("Maximum page is 20.", 2, false, -1);}
-			else if (command[1].equalsIgnoreCase("solveticket") && bot.gm>99)
-				bot.sendChatMsg("Solves ticket with specified number.", 2, false, -1);
-			else if ((command[1].equalsIgnoreCase("announce") || command[1].equalsIgnoreCase("a")) && bot.gm>99){
-				bot.sendChatMsg("Sets chat color and broadcast to ON or OFF.", 2, false, -1);
-				bot.sendChatMsg("if on or off is not specified the current setting will be inverted.", 2, false, -1);}
-			else if (command[1].equals("help")){
-				bot.sendChatMsg("Shows all available commands.", 2, false, -1);
-				bot.sendChatMsg("if a command is specified it will show extra information about the command.", 2, false, -1);}
-			else if (command[1].equals("tags")){
-				bot.sendChatMsg("Shows all available roomtags with some info about them.", 2, false, -1);
-				bot.sendChatMsg("if a roomtag is specified it will show extra information about the command.", 2, false, -1);}
-			else if (command[1].equals("ticket"))
-				bot.sendChatMsg("This opens a ticket which staff will try to answer as soon as possible.", 2, false, -1);
-			else if (command[1].equals("lookup") && bot.gm>149) {
-				bot.sendChatMsg("Returns information about the specified username or botname.", 2, false, -1);
-				bot.sendChatMsg("When using lookup enter name first and when using an username add the tag -u.", 2, false, -1);
-				bot.sendChatMsg("The information includes if user was banned and if a reason was given why.", 2, false, -1);
-				bot.sendChatMsg("A list of alts is provided using the setup username(botname).", 2, false, -1);
-			}
-			else if (command[1].equals("iplookup") && bot.gm>199) {
-				bot.sendChatMsg("Returns the ip adress for the specified username or botname.", 2, false, -1);
-				bot.sendChatMsg("When using iplookup enter name first and when using an username add the tag -u.", 2, false, -1);
-			}
-			else
-				bot.sendChatMsg("Specified command doesn't exist.", 2, false, -1);
+			String detail = command.length > 1 ? command[1] : null;
+			sendHelp(bot, detail, activeMatch);
 			return;
 		}
-		if (command[0].equalsIgnoreCase("tags"))
-        {
+		if (action.equals("exit")){
+			handleExit(bot, activeMatch);
+			return;
+		}
+		if (action.equals("win")){
+			handleWin(bot, activeMatch);
+			return;
+		}
+		if (handleRoomCommand(bot, action, command, inRoom, activeMatch))
+			return;
+		if (action.equalsIgnoreCase("tags"))
+		{
 			if (command.length==1){
 				bot.sendChatMsg("-------Showing all roomtags-------", 1, false, -1);
 				return;
@@ -495,7 +388,7 @@ public class Standard {
 				bot.sendChatMsg("Specified tag doesn't exist.", 2, false, -1);
 			return;
         }
-		if (command[0].equalsIgnoreCase("ticket"))
+		if (action.equalsIgnoreCase("ticket"))
         {
 			for (int i = 0; i<100; i++)
 				if (tickets[i]==null){
@@ -505,9 +398,16 @@ public class Standard {
 				}
 			bot.sendChatMsg("Added ticket to the list.", 2, false, -1);
         }
-		if (command[0].equalsIgnoreCase("gettickets") && bot.gm>99)
+		if (action.equalsIgnoreCase("gettickets"))
         {
-			int number=Integer.parseInt(command[1])-1;
+			if (!requirePermission(bot, CommandRules.GM_LEVEL_MOD, "getTickets"))
+				return;
+			if (!requireArgs(bot, "@getTickets <page>", command, 2))
+				return;
+			Integer number = parseIntArg(bot, "getTickets", command[1]);
+			if (number == null)
+				return;
+			number = number - 1;
 			if (number<20)
 				bot.sendChatMsg("-------Showing tickets, Page "+(number+1)+"-------", 1, false, -1);
 			else
@@ -516,9 +416,16 @@ public class Standard {
 				if (number<100 && tickets[i]!=null)
 					bot.sendChatMsg("["+i+"]:"+tickets[i], 2, false, -1);
         }
-		if (command[0].equalsIgnoreCase("solveticket") && bot.gm>99)
+		if (action.equalsIgnoreCase("solveticket"))
         {
-			int number=Integer.parseInt(command[1])-1;
+			if (!requirePermission(bot, CommandRules.GM_LEVEL_MOD, "solveTicket"))
+				return;
+			if (!requireArgs(bot, "@solveTicket <number>", command, 2))
+				return;
+			Integer number = parseIntArg(bot, "solveTicket", command[1]);
+			if (number == null)
+				return;
+			number = number - 1;
 			if (number>=0 && number<100)
 				tickets[number]=null;
 			int check=0;
@@ -530,9 +437,15 @@ public class Standard {
 					check++;
 				}
         }
-		if (command[0].equals("mute") && bot.gm>99)
+		if (action.equals("mute"))
         {
-			int time=Integer.parseInt(command[2]);
+			if (!requirePermission(bot, CommandRules.GM_LEVEL_MOD, "mute"))
+				return;
+			if (!requireArgs(bot, "@mute <player> <time>", command, 3))
+				return;
+			Integer time = parseIntArg(bot, "mute", command[2]);
+			if (time == null)
+				return;
 			String[] value = new String[]{""+time, command[1]};
 			bot.sql.psupdate("UPDATE `bout_characters` SET `muted`=?, `muteStime`=now() WHERE `name`=?", value);
 			int num = bot.getNum(command[1]);
@@ -541,22 +454,37 @@ public class Standard {
 			bot.sendChatMsg(command[1]+" has been "+(time==0 ? "unmuted" : "muted "+(time==-1 ? "permanently" : "temporarily")), 2, false, -1);
 			return;
         }
-		if ((command[0].equals("announce") || command[0].equals("a")) && bot.gm>99)
+		if (action.equals("announce") || action.equals("a"))
         {
+			if (!requirePermission(bot, CommandRules.GM_LEVEL_MOD, "announce"))
+				return;
+			if (command.length > 2){
+				bot.sendChatMsg("[Server] Usage: @announce <on|off>", 2, false, -1);
+				return;
+			}
 			if (command.length==1)
 				bot.announce=!bot.announce;
-			else
-				if (command[1].equals("on"))
-					bot.announce=true;
-				else if (command[1].equals("off"))
-					bot.announce=false;
+			else if (command[1].equalsIgnoreCase("on"))
+				bot.announce=true;
+			else if (command[1].equalsIgnoreCase("off"))
+				bot.announce=false;
+			else{
+				bot.sendChatMsg("[Server] Usage: @announce <on|off>", 2, false, -1);
+				return;
+			}
 			bot.sendChatMsg("Announce has been set "+(bot.announce ? "on." : "off."), 2, false, -1);
 			return;
         }
-		if (command[0].equals("ban") && bot.gm>149)
+		if (action.equals("ban"))
         {
+			if (!requirePermission(bot, CommandRules.GM_LEVEL_GM, "ban"))
+				return;
+			if (!requireArgs(bot, "@ban <player> <time> <reason>", command, 3))
+				return;
+			Integer time = parseIntArg(bot, "ban", command[2]);
+			if (time == null)
+				return;
 			try {
-			int time=Integer.parseInt(command[2]);
 			String banr ="Not specified";
 			if (command.length>3) {
 				banr = "";
@@ -579,8 +507,12 @@ public class Standard {
 			}catch (Exception e){debug(e.getMessage());}
 			return;
         }
-		if (command[0].equals("kick") && bot.gm>149)
+		if (action.equals("kick"))
         {
+			if (!requirePermission(bot, CommandRules.GM_LEVEL_GM, "kick"))
+				return;
+			if (!requireArgs(bot, "@kick <charactername>", command, 2))
+				return;
 			String name = command[1];
 			int num = bot.getNum(name);
 			if (num == -1){
@@ -590,9 +522,19 @@ public class Standard {
 			bot.lobby.bots[num].channel.closecon();
 			return;
         }
-		if (command[0].equals("delinvent") && bot.gm>149)
+		if (action.equals("delinvent"))
         {
-			int number=Integer.parseInt(command[1]);
+			if (!requirePermission(bot, CommandRules.GM_LEVEL_GM, "delinvent"))
+				return;
+			if (!requireArgs(bot, "@delinvent <part|0 for all>", command, 2))
+				return;
+			Integer number = parseIntArg(bot, "delinvent", command[1]);
+			if (number == null)
+				return;
+			if (number < 0 || number > 10){
+				bot.sendChatMsg("[Server] Invalid inventory slot. Use 0 for all or 1-10.", 2, false, -1);
+				return;
+			}
 			if (number==0)
 				for (int i = 0; i<10; i++)
 					bot.inventitems[i]=0;
@@ -601,45 +543,81 @@ public class Standard {
 			bot.UpdateInvent();
 			return;
         }
-		if (command[0].equals("bruteforce") && bot.gm>149)
+		if (action.equals("bruteforce"))
         {
+			if (!requirePermission(bot, CommandRules.GM_LEVEL_GM, "bruteforce"))
+				return;
+			if (!requireArgs(bot, "@bruteforce <number|roomname> <mode>", command, 2))
+				return;
 			int mode=1;
 			int number=-1;
 			if (command.length==3)
-				mode=Integer.parseInt(command[2]);
-			if(isNumeric(command[1]))
-				number=Integer.parseInt(command[1])-1;
+			{
+				Integer modeValue = parseIntArg(bot, "bruteforce", command[2]);
+				if (modeValue == null)
+					return;
+				mode = modeValue;
+			}
+			if(isNumeric(command[1])){
+				Integer roomValue = parseIntArg(bot, "bruteforce", command[1]);
+				if (roomValue == null)
+					return;
+				number = roomValue - 1;
+			}
 			else
 				for (int i = mode*600; i<(mode*600+600); i++)
 		    		if (bot.lobby.rooms[i].roomname.equals(command[1]))
 		    			number=i;
 			if (number==-1)
+			{
+				bot.sendChatMsg("[Server] Room not found.", 2, false, -1);
 				return;
+			}
 			Room room = bot.lobby.rooms[mode*600+number];
             if(room!=null)
             	room.Join(bot, room.password, bot.ip);
             return;
         }
-		if (command[0].equals("destroyroom") && bot.gm>149)
+		if (action.equals("destroyroom"))
         {
+			if (!requirePermission(bot, CommandRules.GM_LEVEL_GM, "destroyroom"))
+				return;
+			if (!requireArgs(bot, "@destroyroom <number|roomname> <mode>", command, 2))
+				return;
 			int mode=1;
 			int number=-1;
 			if (command.length==3)
-				mode=Integer.parseInt(command[2]);
-			if(isNumeric(command[1]))
-				number=Integer.parseInt(command[1])-1;
+			{
+				Integer modeValue = parseIntArg(bot, "destroyroom", command[2]);
+				if (modeValue == null)
+					return;
+				mode = modeValue;
+			}
+			if(isNumeric(command[1])){
+				Integer roomValue = parseIntArg(bot, "destroyroom", command[1]);
+				if (roomValue == null)
+					return;
+				number = roomValue - 1;
+			}
 			else
 				for (int i = mode*600; i<(mode*600+600); i++)
 		    		if (bot.lobby.rooms[i].roomname.equals(command[1]))
 		    			number=i;
 			if (number==-1)
+			{
+				bot.sendChatMsg("[Server] Room not found.", 2, false, -1);
 				return;
+			}
 			Room room = bot.lobby.rooms[mode*600+number];
 			bot.RemoveRoom(room);
 			return;
         }
-		if (command[0].equals("lookup") && bot.gm>149)
+		if (action.equals("lookup"))
         {
+			if (!requirePermission(bot, CommandRules.GM_LEVEL_GM, "lookup"))
+				return;
+			if (!requireArgs(bot, "@lookup <name> <-u>", command, 2))
+				return;
 			int user=1;
 			if (command.length==3)
 				user=command[2].equals("-u") ? 2 : 1;
@@ -647,13 +625,13 @@ public class Standard {
 			if (user==1) {
 				try {
 					String[] value= new String[1];
-		        	value[0]=command[1];
+		        		value[0]=command[1];
 					ResultSet rs = bot.sql.psquery("SELECT * FROM bout_characters WHERE `name`=? LIMIT 1", value);
-		            if(rs.next())
-		            {
-		            	username=rs.getString("username");
-		            }
-		            rs.close();
+		            	if(rs.next())
+		            	{
+		            		username=rs.getString("username");
+		            	}
+		            	rs.close();
 				} catch (Exception e) {}
 			}
 			try {
@@ -670,142 +648,153 @@ public class Standard {
 				int[] banusers = new int[20];
 				String[] charusers = new String[20];
 				ResultSet rs = bot.sql.psquery("SELECT last_ip,banned,banreason,bantime,banStime FROM bout_users WHERE username=? LIMIT 1", value);
-	            if(rs.next())
-	            {
-	            	ip=rs.getString("last_ip");
-	            	banned=rs.getInt("banned");
-	            	banreason=rs.getString("banreason");
-	            	bantime=rs.getInt("bantime");
-	            	bandate=rs.getString("banStime");
-	            }
-	            rs.close();
-	            if (banned>0) {
-	            	value[0]= bandate;
-					rs = Main.sql.psquery("SELECT TIMESTAMPDIFF(SECOND, ?, now()) AS seconds", value);
-					if(rs.next())
-		            {
-						calctime = rs.getInt("seconds")-bantime;
-		            }
-					rs.close();
-	            }
-	            value[0]=ip;
+            	if(rs.next())
+            	{
+            		ip=rs.getString("last_ip");
+            		banned=rs.getInt("banned");
+            		banreason=rs.getString("banreason");
+            		bantime=rs.getInt("bantime");
+            		bandate=rs.getString("banStime");
+            	}
+            	rs.close();
+            	if (banned>0) {
+            		value[0]= bandate;
+            		rs = Main.sql.psquery("SELECT TIMESTAMPDIFF(SECOND, ?, now()) AS seconds", value);
+				if(rs.next())
+            		{
+					calctime = rs.getInt("seconds")-bantime;
+            		}
+            		rs.close();
+            	}
+            	value[0]=ip;
 				rs = bot.sql.psquery("SELECT `banned`,`username` FROM `bout_users` WHERE `last_ip`=? LIMIT 20", value);
 				int i = 0;
-	            while(rs.next())
-	            {
-	            	users[i]=rs.getString("username");
-	            	banusers[i]=rs.getInt("banned");
-	            	try {
-	            		ResultSet prs = bot.sql.psquery("SELECT `name` FROM bout_characters WHERE `username`=?", new String[] {users[i]});
-	            		if (prs.next())
-	            			charusers[i]=prs.getString("name");
-	            		prs.close();
-	            	} catch (Exception e){debug(e.getMessage());}
-	            	i++;
-	            	if (i == 20)
-	            		break;
-	            }
-	            rs.close();
-	            bot.sendChatMsg("---Showing info for " +username+"("+charname+")---", 2, false, -1);
-	            bot.sendChatMsg(banned == 0 ? "User is not banned" : ("User is " + (bantime==-1 ? "permanently banned for " : 
-	            	"banned for "+calctime+" seconds, reason ")+banreason), 2, false, -1);
-	            String notbanned = "";
-	            String isbanned = "";
-	            for (i = 0; i<20; i++)
-	            	if (users[i]==null || users[i].equals(""))
-	            		break;
-	            	else if (banusers[i]==0)
-	            		notbanned += users[i]+"("+charusers[i]+"), ";
-	            	else
-	            		isbanned += users[i]+"("+charusers[i]+"), ";
-	            String[] nban = notbanned.split(",");
-	            for (i = 0; i<nban.length; i+=2)
-	            	if (i==0 && nban.length>2)
-	            		bot.sendChatMsg("Alts(not banned): "+nban[i+0]+nban[i+1], 4, false, -1);
-	            	else if (i==0)
-	            		bot.sendChatMsg("Alts(not banned): "+nban[i+0], 4, false, -1);
-	            	else if (nban.length>2+i)
-	            		bot.sendChatMsg(nban[i+0]+nban[i+1], 4, false, -1);
-	            	else
-	            		bot.sendChatMsg(nban[i+0], 4, false, -1);
-	            String[] iban = isbanned.split(",");
-	            for (i = 0; i<iban.length; i+=2)
-	            	if (i==0 && iban.length>2)
-	            		bot.sendChatMsg("Alts(banned): "+iban[i+0]+iban[i+1], 2, false, -1);
-	            	else if (i==0)
-	            		bot.sendChatMsg("Alts(banned): "+iban[i+0], 2, false, -1);
-	            	else if (iban.length>2+i)
-	            		bot.sendChatMsg(iban[i+0]+iban[i+1], 2, false, -1);
-	            	else
-	            		bot.sendChatMsg(iban[i+0], 2, false, -1);
-			} catch (Exception e) {debug(e.getMessage());}
-			return;
+            	while(rs.next())
+            	{
+            		users[i]=rs.getString("username");
+            		banusers[i]=rs.getInt("banned");
+            		try {
+            			ResultSet prs = bot.sql.psquery("SELECT `name` FROM bout_characters WHERE `username`=?", new String[] {users[i]});
+            			if (prs.next())
+					charusers[i]=prs.getString("name");
+            			prs.close();
+            		} catch (Exception e){debug(e.getMessage());}
+            		i++;
+            	}
+            	rs.close();
+            	String[] nban = new String[20];
+            	String[] iban = new String[20];
+            	int n=0, i2=0;
+            	for (int b = 0; b<users.length; b++){
+            		if (users[b]!=null && banusers[b]==0)
+            			nban[n++]=users[b]+"("+charusers[b]+")";
+            		else if (users[b]!=null)
+            			iban[i2++]=users[b]+"("+charusers[b]+")";
+            	}
+            	bot.sendChatMsg("---Showing info for " +username+"("+charname+")---", 2, false, -1);
+            	bot.sendChatMsg(banned == 0 ? "User is not banned" : ("User is " + (bantime==-1 ? "permanently banned for " :
+            			"banned for ") + (banned == 0 ? "0 seconds" : (bantime==0 ? "manual unban" : (""+(bantime-calctime)+" seconds")))))
+            			, banned==0 ? 4 : 2, false, -1);
+            	if (banned == 1)
+            		bot.sendChatMsg("Ban reason: "+banreason, 2, false, -1);
+            	for (int b = 0; b<20; b++)
+            		if (nban[b]==null)
+            			break;
+            		else if (nban[b]!=null)
+            			if (nban[b+1]!=null)
+            				bot.sendChatMsg("Alts(not banned): "+nban[b+0]+nban[b+1], 4, false, -1);
+            			else
+            				bot.sendChatMsg("Alts(not banned): "+nban[b+0], 4, false, -1);
+            	for (int b = 0; b<20; b++)
+            		if (iban[b]==null)
+            			break;
+            		else if (iban[b]!=null)
+            			if (iban[b+1]!=null)
+            				bot.sendChatMsg("Alts(banned): "+iban[b+0]+iban[b+1], 2, false, -1);
+            			else
+            				bot.sendChatMsg("Alts(banned): "+iban[b+0], 2, false, -1);
+        	} catch (Exception e){}
         }
-		if (command[0].equals("iplookup") && bot.gm>199)
+		if (action.equals("iplookup"))
         {
-			String ip = "";
-			String username="";
-			String charname="";
+			if (!requirePermission(bot, CommandRules.GM_LEVEL_SUPER, "iplookup"))
+				return;
+			if (!requireArgs(bot, "@iplookup <name> <-u>", command, 2))
+				return;
+			String username = "", charname = "", ip = "";
 			int user=1;
 			if (command.length==3)
 				user=command[2].equals("-u") ? 2 : 1;
+			String[] value= new String[1];
 			if (user==1) {
 				charname=command[1];
 				try {
-            		ResultSet rs = bot.sql.psquery("SELECT `username` FROM bout_characters WHERE `name`=?", new String[] {charname});
-            		if (rs.next())
-            			username=rs.getString("username");
-            		rs.close();
-            	} catch (Exception e){debug(e.getMessage());}
+					ResultSet rs = bot.sql.psquery("SELECT `username` FROM bout_characters WHERE `name`=?", new String[] {command[1]});
+					if (rs.next())
+						username=rs.getString("username");
+					rs.close();
+				} catch (Exception e){debug(e.getMessage());}
 			}
 			else
 			{
 				username=command[1];
 				try {
-	        		ResultSet rs = bot.sql.psquery("SELECT `name` FROM bout_characters WHERE `username`=?", new String[] {username});
-	        		if (rs.next())
-	        			charname=rs.getString("name");
-	        		rs.close();
-	        	} catch (Exception e){debug(e.getMessage());}
-	        }
+					ResultSet rs = bot.sql.psquery("SELECT `name` FROM bout_characters WHERE `username`=?", new String[] {username});
+					if (rs.next())
+						charname=rs.getString("name");
+					rs.close();
+				} catch (Exception e){debug(e.getMessage());}
+        			}
 			try {
 				ResultSet rs = bot.sql.psquery("SELECT `last_ip` FROM bout_users WHERE `username`=? LIMIT 1", new String[] {username});
-	            if(rs.next())
-	            {
-	            	ip=rs.getString("last_ip");
-	            }
-        	}catch (Exception e) {debug(e.getMessage());}
+            	if(rs.next())
+            	{
+            		ip=rs.getString("last_ip");
+            	}
+        		}catch (Exception e) {debug(e.getMessage());}
 			bot.sendChatMsg("Showing ip for "+username+"("+charname+"): "+ip, 1, false, -1);
             return;
         }
-		if (command[0].equals("item") && bot.gm>199)
+		if (action.equals("item"))
         {
-			int itemid=Integer.parseInt(command[1]);
+			if (!requirePermission(bot, CommandRules.GM_LEVEL_SUPER, "item"))
+				return;
+			if (!requireArgs(bot, "@item <itemid>", command, 2))
+				return;
+			Integer itemid = parseIntArg(bot, "item", command[1]);
+			if (itemid == null)
+				return;
 			int time=0;
 			for (int i = 0; i<10; i++)
 				if (bot.inventitems[i]==0){
 					String[] value = {""+itemid};
 					String name=null;
 			    	ResultSet rs = bot.sql.psquery("SELECT * FROM bout_items WHERE id=? LIMIT 1", value);
-			        try{
-			        	if (rs.next()){
-			        		time = rs.getInt("days");
-			        		name = rs.getString("name");
-			        	}
-			        	rs.close();
-			        }catch (Exception e){}
+		        	try{
+		        		if (rs.next()){
+		        			time = rs.getInt("days");
+		        			name = rs.getString("name");
+		        		}
+		        		rs.close();
+		        	}catch (Exception e){}
 					bot.inventitems[i]=itemid;
 					if (time>0)
-	    				bot.AddItemTime(itemid, i, "item", time);
+		    			bot.AddItemTime(itemid, i, "item", time);
 					bot.UpdateInvent();
 					bot.sendChatMsg("Added item: "+name+" at inventory slot "+(i+1), 2, false, -1);
 					break;
 				}
 			return;
         }
-		if (command[0].equals("itemname") && bot.gm>199)
+		if (action.equals("itemname"))
         {
-			int itemid=Integer.parseInt(command[1]);
+			if (!requirePermission(bot, CommandRules.GM_LEVEL_SUPER, "itemname"))
+				return;
+			if (!requireArgs(bot, "@itemname <itemid>", command, 2))
+				return;
+			Integer itemid = parseIntArg(bot, "itemname", command[1]);
+			if (itemid == null)
+				return;
 			String name = "";
 			ResultSet rs = bot.sql.psquery("SELECT * FROM bout_items WHERE id=? LIMIT 1", new String[]{""+itemid});
 			try{
@@ -816,16 +805,26 @@ public class Standard {
 			bot.sendChatMsg("Found item: "+name+" with id: "+itemid, 2, false, -1);
 			return;
         }
-		if (command[0].equals("statboost") && bot.gm>199)
+		if (action.equals("statboost"))
         {
+			if (!requirePermission(bot, CommandRules.GM_LEVEL_SUPER, "statboost"))
+				return;
+			if (command.length > 2){
+				bot.sendChatMsg("[Server] Usage: @statboost <on|off>", 2, false, -1);
+				return;
+			}
 			boolean safed = bot.statboost;
 			if (command.length==1)
 				bot.statboost=!bot.statboost;
 			else
-				if (command[1].equals("on"))
+				if (command[1].equalsIgnoreCase("on"))
 					bot.statboost=true;
-				else if (command[1].equals("off"))
+				else if (command[1].equalsIgnoreCase("off"))
 					bot.statboost=false;
+				else{
+					bot.sendChatMsg("[Server] Usage: @statboost <on|off>", 2, false, -1);
+					return;
+				}
 			if ((safed && bot.statboost) || (!safed && !bot.statboost))
 				return;
 			if (bot.statboost){
@@ -842,56 +841,314 @@ public class Standard {
 			    bot.attmintransb-=4000;
 			    bot.attmaxtransb-=6000;
 			}
+			bot.UpdateBot();
+			return;
         }
-		if (command[0].equals("itemid") && bot.gm>199)
+		if (action.equals("itemid"))
         {
-			int limit=0;
+			if (!requirePermission(bot, CommandRules.GM_LEVEL_SUPER, "itemid"))
+				return;
+			int limit = 0;
+			if (command.length==1)
+			{
+				bot.sendChatMsg("[Server] Usage: @itemid <itemname> <page>", 2, false, -1);
+				return;
+			}
 			if (command.length==2)
-				limit=0;
+				limit = 0;
 			else
-				limit=Integer.parseInt(command[2])-1;
-			bot.sendChatMsg("showing results for page "+limit+".", 2, false, -1);
+			{
+				Integer limitValue = parseIntArg(bot, "itemid", command[2]);
+				if (limitValue == null)
+					return;
+				limit = limitValue - 1;
+			}
 			ResultSet rs = bot.sql.psquery("SELECT * FROM bout_items WHERE UPPER(name) LIKE UPPER(?) LIMIT "+(limit*5)+",5", new String[]{"%"+command[1]+"%"});
 			try{
 				while (rs.next()){
-					String name=rs.getString("name");
-					int itemid=rs.getInt("id");
+					int itemid = rs.getInt("id");
+					String name = rs.getString("name");
 					bot.sendChatMsg(""+itemid+" - "+name, 2, false, -1);
 				}
 				rs.close();
-			}catch(Exception e){}
+			}catch (Exception e){debug(""+e);}
+			bot.sendChatMsg("showing results for page "+limit+".", 2, false, -1);
 			return;
         }
-		if (command[0].equals("coins") && bot.gm>199)
+		if (action.equals("coins"))
         {
-            bot.coins+=Integer.parseInt(command[1]);
-            bot.sendChatMsg("Current coins: " + bot.coins, 2, false, -1);
+			if (!requirePermission(bot, CommandRules.GM_LEVEL_SUPER, "coins"))
+				return;
+			if (!requireArgs(bot, "@coins <amount>", command, 2))
+				return;
+			Integer amount = parseIntArg(bot, "coins", command[1]);
+			if (amount == null)
+				return;
+            bot.coins+=amount;
             bot.UpdateCoins();
-            return;
+            bot.sendChatMsg("Current coins: " + bot.coins, 2, false, -1);
         }
-		if (command[0].equals("gigas") && bot.gm>199)
+		if (action.equals("gigas"))
         {
-            bot.gigas+=Integer.parseInt(command[1]);
-            bot.sendChatMsg("Current gigas: " + bot.gigas, 2, false, -1);
+			if (!requirePermission(bot, CommandRules.GM_LEVEL_SUPER, "gigas"))
+				return;
+			if (!requireArgs(bot, "@gigas <amount>", command, 2))
+				return;
+			Integer amount = parseIntArg(bot, "gigas", command[1]);
+			if (amount == null)
+				return;
+            bot.gigas+=amount;
             bot.UpdateBot();
+            bot.sendChatMsg("Current gigas: " + bot.gigas, 2, false, -1);
+        }
+		if (action.equals("reboot"))
+        {
+			if (!requirePermission(bot, CommandRules.GM_LEVEL_ADMIN, "reboot"))
+				return;
+			if (!requireArgs(bot, "@reboot <seconds>", command, 2))
+				return;
+			Integer time = parseIntArg(bot, "reboot", command[1]);
+			if (time == null)
+				return;
+            bot.sql.psupdate("UPDATE `server` SET `value`=? WHERE `name`='reboot'", new String[]{""+time});
+            bot.sendChatMsg("Rebooting server in: "+time+" seconds.", 2, false, -1);
             return;
         }
-		if (command[0].equals("reboot") && bot.gm>249)
+		if (action.equals("dropreload"))
         {
-            int time=Integer.parseInt(command[1]);
-            debug("rebooting in "+time+" seconds");
-            Main.restartApplication();
-            return;
-        }
-		if (command[0].equals("dropreload") && bot.gm>249)
-        {
-			Long start = System.currentTimeMillis();
-            drops();
-			int time = (int)TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis() - start);
+			if (!requirePermission(bot, CommandRules.GM_LEVEL_ADMIN, "dropreload"))
+				return;
+			long time = System.currentTimeMillis();
+			bot.lobby.standard.drops();
+			time = TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis() - time);
             bot.sendChatMsg("Reloaded the drop list in: "+time+"s.", 2, false, -1);
-            return;
         }
 	}
+
+	private void sendHelp(BotClass bot, String detail, boolean activeMatch)
+	{
+		if (detail == null){
+			bot.sendChatMsg("-------Showing all available commands-------", 1, false, -1);
+			if (activeMatch){
+				bot.sendChatMsg("@exit                      - safely leave the match", 2, false, -1);
+				if (CommandRules.hasPermission(bot.gm, CommandRules.GM_LEVEL_GM))
+					bot.sendChatMsg("@win                       - end the current match", 2, false, -1);
+				if (bot.roomnum==bot.room.roomowner){
+					bot.sendChatMsg("@rm <name>                 - transfer roommaster", 2, false, -1);
+					bot.sendChatMsg("@kick <name>               - kick player from room", 2, false, -1);
+				}
+				bot.sendChatMsg("@suicide                   - kills your bot", 2, false, -1);
+			}
+			if (CommandRules.hasPermission(bot.gm, CommandRules.GM_LEVEL_ADMIN)) {
+				bot.sendChatMsg("@dropreload                - need admin rights", 2, false, -1);
+			}
+			if (CommandRules.hasPermission(bot.gm, CommandRules.GM_LEVEL_SUPER)){
+				bot.sendChatMsg("@coins <amount>            - need supergm rights", 2, false, -1);
+				bot.sendChatMsg("@item <itemid>             - need supergm rights", 2, false, -1);
+				bot.sendChatMsg("@gigas <amount>            - need supergm rights", 2, false, -1);
+				bot.sendChatMsg("@itemname <itemid>         - need supergm rights", 2, false, -1);
+				bot.sendChatMsg("@itemid <itemname> <page>  - need supergm rights", 2, false, -1);
+				bot.sendChatMsg("@statboost <on|off>        - need supergm rights", 2, false, -1);
+				bot.sendChatMsg("@iplookup <name> <-u>      - need supergm rights", 2, false, -1);
+			}
+			if(CommandRules.hasPermission(bot.gm, CommandRules.GM_LEVEL_GM)){
+				bot.sendChatMsg("@kick <charactername>      - need gm rights", 4, false, -1);
+				bot.sendChatMsg("@delinvent <part|0 for all>- need gm rights", 4, false, -1);
+				bot.sendChatMsg("@destroyroom <number> <mode>- need gm rights", 4, false, -1);
+				bot.sendChatMsg("@bruteforce <number> <mode>- need gm rights", 4, false, -1);
+				bot.sendChatMsg("@ban <player> <time> <reason>- need gm rights", 4, false, -1);
+				bot.sendChatMsg("@lookup <name> <-u>        - need gm rights", 4, false, -1);
+			}
+			if(CommandRules.hasPermission(bot.gm, CommandRules.GM_LEVEL_MOD)){
+				bot.sendChatMsg("@mute <player> <time>      - need mod rights", 1, false, -1);
+				bot.sendChatMsg("@getTickets <page>         - need mod rights", 1, false, -1);
+				bot.sendChatMsg("@solveTicket <number>      - need mod rights", 1, false, -1);
+				bot.sendChatMsg("@announce <on|off>         - need mod rights", 1, false, -1);
+			}
+			bot.sendChatMsg("@help <command> gives more info about the command.", 2, false, -1);
+			bot.sendChatMsg("@tags <tag> - all roomtags that are available for use.", 2, false, -1);
+			bot.sendChatMsg("@ticket <question info> creates a ticket to get help from staff.", 1, false, -1);
+			return;
+		}
+		bot.sendChatMsg("--------info for command: "+detail+"--------", 2, false, -1);
+		if (detail.equalsIgnoreCase("dropreload")) {
+			bot.sendChatMsg("By using this command the droplist from the database,", 2, false, -1);
+			bot.sendChatMsg("will be reloaded into memory, will return time spent reloading.", 2, false, -1);
+		}
+		else if (detail.equalsIgnoreCase("coins") && bot.gm>199)
+			bot.sendChatMsg("Adds specified amount to your coin balance.", 2, false, -1);
+		else if (detail.equalsIgnoreCase("gigas") && bot.gm>199)
+			bot.sendChatMsg("Adds specified amount to your gigas balance.", 2, false, -1);
+		else if (detail.equalsIgnoreCase("item") && bot.gm>199)
+			bot.sendChatMsg("Adds the specified item to your inventory.", 2, false, -1);
+		else if (detail.equalsIgnoreCase("itemname") && bot.gm>199)
+			bot.sendChatMsg("Returns name of specified itemid if it excists.", 2, false, -1);
+		else if (detail.equalsIgnoreCase("itemid") && bot.gm>199){
+			bot.sendChatMsg("Returns all found similair names to specified name.", 2, false, -1);
+			bot.sendChatMsg("Specify a page name to see the next row of results.", 2, false, -1);}
+		else if (detail.equalsIgnoreCase("statboost") && bot.gm>199){
+			bot.sendChatMsg("sets your stats to OP.", 2, false, -1);
+			bot.sendChatMsg("if on or off is not specified the current setting will be inverted.", 2, false, -1);}
+		else if (detail.equalsIgnoreCase("kick") && bot.gm>149)
+			bot.sendChatMsg("Kicks specified player from the server.", 2, false, -1);
+		else if (detail.equalsIgnoreCase("delinvent") && bot.gm>149){
+			bot.sendChatMsg("Removes item from specified slot in inventory.", 2, false, -1);
+			bot.sendChatMsg("if specified slot is 0 all items in inventory will be removed.", 2, false, -1);}
+		else if (detail.equalsIgnoreCase("destroyroom") && bot.gm>149){
+			bot.sendChatMsg("Destroys specified room.", 2, false, -1);
+			bot.sendChatMsg("Rooms can be specified by number or roomname", 2, false, -1);
+			bot.sendChatMsg("if mode isn't specified sector will be used", 2, false, -1);
+			bot.sendChatMsg("Modes: sector=1, pvp=0, base=2", 2, false, -1);}
+		else if (detail.equalsIgnoreCase("bruteforce") && bot.gm>149){
+			bot.sendChatMsg("Joins a room regardless of password.", 2, false, -1);
+			bot.sendChatMsg("Rooms can be specified by number or roomname", 2, false, -1);
+			bot.sendChatMsg("if mode isn't specified sector will be used", 2, false, -1);
+			bot.sendChatMsg("Modes: sector=1, pvp=0, base=2", 2, false, -1);}
+		else if (detail.equalsIgnoreCase("ban") && bot.gm>149) {
+			bot.sendChatMsg("bans player for time if time=0 it will unban the player.", 2, false, -1);
+			bot.sendChatMsg("Adding a reason for banning is optional but encouraged!", 2, false, -1);
+		}
+		else if (detail.equalsIgnoreCase("mute") && bot.gm>99)
+			bot.sendChatMsg("Mutes player for time if time=0 it will unmute the player.", 2, false, -1);
+		else if (detail.equalsIgnoreCase("gettickets") && bot.gm>99){
+			bot.sendChatMsg("Gets all open tickets by page.", 2, false, -1);
+			bot.sendChatMsg("Maximum page is 20.", 2, false, -1);}
+		else if (detail.equalsIgnoreCase("solveticket") && bot.gm>99)
+			bot.sendChatMsg("Solves ticket with specified number.", 2, false, -1);
+		else if ((detail.equalsIgnoreCase("announce") || detail.equalsIgnoreCase("a")) && bot.gm>99){
+			bot.sendChatMsg("Sets chat color and broadcast to ON or OFF.", 2, false, -1);
+			bot.sendChatMsg("if on or off is not specified the current setting will be inverted.", 2, false, -1);}
+		else if (detail.equalsIgnoreCase("help")){
+			bot.sendChatMsg("Shows all available commands.", 2, false, -1);
+			bot.sendChatMsg("if a command is specified it will show extra information about the command.", 2, false, -1);}
+		else if (detail.equalsIgnoreCase("tags")){
+			bot.sendChatMsg("Shows all available roomtags with some info about them.", 2, false, -1);
+			bot.sendChatMsg("if a roomtag is specified it will show extra information about the command.", 2, false, -1);}
+		else if (detail.equalsIgnoreCase("ticket"))
+			bot.sendChatMsg("This opens a ticket which staff will try to answer as soon as possible.", 2, false, -1);
+		else if (detail.equalsIgnoreCase("lookup") && bot.gm>149) {
+			bot.sendChatMsg("Returns information about the specified username or botname.", 2, false, -1);
+			bot.sendChatMsg("When using lookup enter name first and when using an username add the tag -u.", 2, false, -1);
+			bot.sendChatMsg("The information includes if user was banned and if a reason was given why.", 2, false, -1);
+			bot.sendChatMsg("A list of alts is provided using the setup username(botname).", 2, false, -1);
+		}
+		else if (detail.equalsIgnoreCase("iplookup") && bot.gm>199) {
+			bot.sendChatMsg("Returns the ip adress for the specified username or botname.", 2, false, -1);
+			bot.sendChatMsg("When using iplookup enter name first and when using an username add the tag -u.", 2, false, -1);
+		}
+		else if (detail.equalsIgnoreCase("exit")){
+			bot.sendChatMsg("Safely leaves the current match.", 2, false, -1);
+		}
+		else if (detail.equalsIgnoreCase("win")){
+			bot.sendChatMsg("Immediately ends the current match.", 2, false, -1);
+		}
+		else if (detail.equalsIgnoreCase("suicide")){
+			bot.sendChatMsg("Kills your bot in the current match.", 2, false, -1);
+		}
+		else if (detail.equalsIgnoreCase("rm")){
+			bot.sendChatMsg("Transfers roommaster to the specified botname.", 2, false, -1);
+		}
+		else if (detail.equalsIgnoreCase("kick")){
+			bot.sendChatMsg("Kicks the specified player from the room.", 2, false, -1);
+		}
+		else
+			bot.sendChatMsg("Specified command doesn't exist.", 2, false, -1);
+	}
+
+	private boolean handleRoomCommand(BotClass bot, String action, String[] command, boolean inRoom, boolean activeMatch)
+	{
+		if (!inRoom)
+			return false;
+		if (action.equals("suicide")){
+			if (!activeMatch){
+				bot.sendChatMsg("[Server] @suicide is only available during an active match.", 2, false, -1);
+				return true;
+			}
+			bot.room.Dead(bot.roomnum, 10);
+			return true;
+		}
+		if (action.equals("rm")){
+			if (command.length < 2){
+				bot.sendChatMsg("Usage: @rm <name>", 2, false, -1);
+				return true;
+			}
+			if(bot.roomnum==bot.room.roomowner)
+				for (int i = 0; i<8; i++)
+					if(bot.room.bot[i]!=null && bot.room.bot[i].botname.equalsIgnoreCase(command[1])){
+						bot.room.roomowner=i;
+						bot.room.UserInfoPacket(-1);
+						break;
+					}
+			return true;
+		}
+		if (action.equals("kick")){
+			if (command.length < 2){
+				bot.sendChatMsg("Usage: @kick <name>", 2, false, -1);
+				return true;
+			}
+			if(bot.roomnum==bot.room.roomowner)
+				for (int i = 0; i<8; i++)
+					if(bot.room.bot[i]!=null && bot.room.bot[i].botname.equalsIgnoreCase(command[1]))
+						if (bot.room.Exit(i, true)){
+                    		bot.RemoveRoom(bot.room);
+                    		break;
+						}
+			return true;
+		}
+		return false;
+	}
+
+	private void handleExit(BotClass bot, boolean activeMatch)
+	{
+		if (bot.room == null || bot.roomnum == -1 || !activeMatch){
+			bot.sendChatMsg("[Server] @exit is only available during an active match.", 2, false, -1);
+			return;
+		}
+		if (bot.room.Exit(bot.roomnum, false))
+        	bot.RemoveRoom(bot.room);
+	}
+
+	private void handleWin(BotClass bot, boolean activeMatch)
+	{
+		if (bot.room == null || bot.roomnum == -1 || !activeMatch){
+			bot.sendChatMsg("[Server] @win is only available during an active match.", 2, false, -1);
+			return;
+		}
+		if (!CommandRules.hasPermission(bot.gm, CommandRules.GM_LEVEL_GM)){
+			bot.sendChatMsg("[Server] You do not have permission to use @win.", 2, false, -1);
+			return;
+		}
+		bot.room.forceEndMatch(bot.roomnum);
+	}
+
+	private boolean requirePermission(BotClass bot, int requiredLevel, String commandName)
+	{
+		if (!CommandRules.hasPermission(bot.gm, requiredLevel)){
+			bot.sendChatMsg("[Server] You do not have permission to use @"+commandName+".", 2, false, -1);
+			return false;
+		}
+		return true;
+	}
+
+	private boolean requireArgs(BotClass bot, String usage, String[] command, int minArgs)
+	{
+		if (command.length < minArgs){
+			bot.sendChatMsg("[Server] Usage: "+usage, 2, false, -1);
+			return false;
+		}
+		return true;
+	}
+
+	private Integer parseIntArg(BotClass bot, String commandName, String value)
+	{
+		try{
+			return Integer.parseInt(value);
+		}catch (NumberFormatException e){
+			bot.sendChatMsg("[Server] Invalid number for @"+commandName+".", 2, false, -1);
+			return null;
+		}
+	}
+
 	
 	public int[][] moblist(int map)
 	{
