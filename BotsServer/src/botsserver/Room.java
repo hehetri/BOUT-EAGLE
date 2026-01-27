@@ -95,6 +95,13 @@ public class Room {
         	bot[num].send(packet,true);
         packet.clean();
 	}
+
+	public void ParseChatCommand(BotClass bot, String commandLine)
+	{
+		if (bot == null)
+			return;
+		bot.lobby.standard.ParseRoomCommands(bot, commandLine);
+	}
 	
 	public void ChangePass(String password, int num)
 	{
