@@ -113,7 +113,7 @@ public class Room {
     		if(map==0)
     			this.map[0] = (int)(Math.random()*5)+1;
     		else
-    			this.map[0] = map-1;}
+    			this.map[0] = map;}
     	else
     		this.map[0] = map;
     	this.map[1]=map;
