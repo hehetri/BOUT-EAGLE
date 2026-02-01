@@ -37,6 +37,7 @@ public class Room {
 	protected boolean sectorclear = false;
 	//protected int[][] rspawn = null;
 	protected int[] Mobkilled = {};
+	protected int moblistMap = -1;
 	protected Packet packet = new Packet();
 	protected ScheduledFuture<?> clearstage = null;
 	protected ScheduledFuture<?> timeover = null;
@@ -118,7 +119,7 @@ public class Room {
     	this.map[1]=map;
     	MapPacket();
     	if (this.roommode==2)
-    		refreshSectorMoblist();
+    		refreshSectorMoblist(this.map[1]);
     	//if (this.roommode==2)
     	//	event(1);
 	}
@@ -181,11 +182,12 @@ public class Room {
 		packet.clean();
 	}
 
-	private void refreshSectorMoblist()
+	private void refreshSectorMoblist(int mapId)
 	{
-		MapValues=bot[roomowner].lobby.standard.mapvalues[this.map[0]];
+		this.map[0]=mapId;
+		MapValues=bot[roomowner].lobby.standard.mapvalues[mapId];
 		//prep
-		int[][] mobtemp=bot[roomowner].lobby.standard.moblist(this.map[0]);
+		int[][] mobtemp=bot[roomowner].lobby.standard.moblist(mapId);
 		Map<Integer, Integer> rspawn=bot[roomowner].lobby.standard.rebirthspawn;
 		int[] mobwork=mobtemp[0].clone();
 		for (int i = 0; i<mobwork.length; i++)
@@ -196,6 +198,14 @@ public class Room {
 		Moblist[0]=mobwork;
 		Moblist[1]=mobtemp[1];
 		Mobkilled=Moblist[0].clone();
+		moblistMap=mapId;
+	}
+
+	private void ensureSectorMoblist()
+	{
+		int mapId=this.map[1]!=0 ? this.map[1] : this.map[0];
+		if (moblistMap!=mapId)
+			refreshSectorMoblist(mapId);
 	}
 	
 	public int GhostRoomCheck()
@@ -445,6 +455,7 @@ public class Room {
     {
     	try {
     		if (roommode==2) {
+    			ensureSectorMoblist();
 		    	if (this.Moblist[0][num]==typ) {
 		    		if (this.Mobkilled[num]==-1 && this.Moblist[1][num]!=2) {
 		    			String [] value = {""+MapValues[1], ""+num+": supected "+this.Moblist[0][num]+" - actual "+typ, "already killed",};
@@ -985,7 +996,8 @@ public class Room {
     		return;
     	}
     	if (roommode==2){
-    		refreshSectorMoblist();
+    		int mapId=this.map[1]!=0 ? this.map[1] : this.map[0];
+    		refreshSectorMoblist(mapId);
     		timeover=bot[roomowner].executorp.schedule(TimeOver(this), MapValues[5], TimeUnit.MINUTES);
     	}
     	if (roommode!=2)
