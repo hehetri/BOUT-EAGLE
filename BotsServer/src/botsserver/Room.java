@@ -116,10 +116,10 @@ public class Room {
     			this.map[0] = map;}
     	else
     		this.map[0] = map;
-    	this.map[1]=map;
-    	MapPacket();
-    	if (this.roommode==2)
-    		refreshSectorMoblist(this.map[0]);
+	    this.map[1]=map;
+	    MapPacket();
+	    if (this.roommode==2)
+	    	refreshSectorMoblist(this.map[1]);
     	//if (this.roommode==2)
     	//	event(1);
 	}
@@ -203,7 +203,7 @@ public class Room {
 
 	private void ensureSectorMoblist()
 	{
-		int mapId=this.map[0];
+		int mapId=this.map[1]!=0 ? this.map[1] : this.map[0];
 		if (moblistMap!=mapId)
 			refreshSectorMoblist(mapId);
 	}
@@ -996,7 +996,7 @@ public class Room {
     		return;
     	}
     	if (roommode==2){
-    		int mapId=this.map[0];
+    		int mapId=this.map[1]!=0 ? this.map[1] : this.map[0];
     		refreshSectorMoblist(mapId);
     		timeover=bot[roomowner].executorp.schedule(TimeOver(this), MapValues[5], TimeUnit.MINUTES);
     	}
