@@ -7,7 +7,6 @@ import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
 public class Room {
-	private static final int SECTOR_MAP_INDEX_OFFSET = 3;
 	protected BotClass[] bot = new BotClass[8];
 	protected int[] port = new int[8];
 	protected boolean[] closedslot = new boolean[8];
@@ -116,7 +115,7 @@ public class Room {
     		else
     			this.map[0] = map;}
     	else
-    		this.map[0] = normalizeSectorMap(map);
+    		this.map[0] = map;
     	this.map[1]=map;
     	MapPacket();
     	if (this.roommode==2)
@@ -200,11 +199,6 @@ public class Room {
 		Moblist[1]=mobtemp[1];
 		Mobkilled=Moblist[0].clone();
 		moblistMap=mapId;
-	}
-
-	private int normalizeSectorMap(int mapId)
-	{
-		return mapId + SECTOR_MAP_INDEX_OFFSET;
 	}
 
 	private void ensureSectorMoblist()
