@@ -95,7 +95,7 @@ public class LoginServerConnection extends Thread {
 				this.LOGIN_ALLOG = rs.getInt("online");
 				this.LOGIN_RESULT = 0;
 			}
-			boolean properlogin = true;//this.LOGIN_PASSWORD.equals(this.pass);
+			boolean properlogin = this.LOGIN_PASSWORD != null && this.LOGIN_PASSWORD.equals(this.pass);
 //			else if(properlogin){
 //				user2 = new String[11];
 //				user2[0] = this.user;
