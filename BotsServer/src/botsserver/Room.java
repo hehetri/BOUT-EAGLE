@@ -7,6 +7,7 @@ import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
 public class Room {
+	private static final int SECTOR_MAP_INDEX_OFFSET = 3;
 	protected BotClass[] bot = new BotClass[8];
 	protected int[] port = new int[8];
 	protected boolean[] closedslot = new boolean[8];
@@ -37,6 +38,7 @@ public class Room {
 	protected boolean sectorclear = false;
 	//protected int[][] rspawn = null;
 	protected int[] Mobkilled = {};
+	protected int moblistMap = -1;
 	protected Packet packet = new Packet();
 	protected ScheduledFuture<?> clearstage = null;
 	protected ScheduledFuture<?> timeover = null;
@@ -112,11 +114,13 @@ public class Room {
     		if(map==0)
     			this.map[0] = (int)(Math.random()*5)+1;
     		else
-    			this.map[0] = map-1;}
+    			this.map[0] = map;}
     	else
-    		this.map[0] = map;
+    		this.map[0] = normalizeSectorMap(map);
     	this.map[1]=map;
     	MapPacket();
+    	if (this.roommode==2)
+    		refreshSectorMoblist(this.map[0]);
     	//if (this.roommode==2)
     	//	event(1);
 	}
@@ -177,6 +181,37 @@ public class Room {
 			if(bot[i]!=null)
 				bot[i].send(packet,true);
 		packet.clean();
+	}
+
+	private void refreshSectorMoblist(int mapId)
+	{
+		this.map[0]=mapId;
+		MapValues=bot[roomowner].lobby.standard.mapvalues[mapId];
+		//prep
+		int[][] mobtemp=bot[roomowner].lobby.standard.moblist(mapId);
+		Map<Integer, Integer> rspawn=bot[roomowner].lobby.standard.rebirthspawn;
+		int[] mobwork=mobtemp[0].clone();
+		for (int i = 0; i<mobwork.length; i++)
+			if(rspawn.containsKey(mobwork[i]))
+				mobwork[i] = rspawn.get(mobwork[i]);
+		//prep end
+		sectorclear=false;
+		Moblist[0]=mobwork;
+		Moblist[1]=mobtemp[1];
+		Mobkilled=Moblist[0].clone();
+		moblistMap=mapId;
+	}
+
+	private int normalizeSectorMap(int mapId)
+	{
+		return mapId + SECTOR_MAP_INDEX_OFFSET;
+	}
+
+	private void ensureSectorMoblist()
+	{
+		int mapId=this.map[0];
+		if (moblistMap!=mapId)
+			refreshSectorMoblist(mapId);
 	}
 	
 	public int GhostRoomCheck()
@@ -426,6 +461,7 @@ public class Room {
     {
     	try {
     		if (roommode==2) {
+    			ensureSectorMoblist();
 		    	if (this.Moblist[0][num]==typ) {
 		    		if (this.Mobkilled[num]==-1 && this.Moblist[1][num]!=2) {
 		    			String [] value = {""+MapValues[1], ""+num+": supected "+this.Moblist[0][num]+" - actual "+typ, "already killed",};
@@ -966,19 +1002,8 @@ public class Room {
     		return;
     	}
     	if (roommode==2){
-    		MapValues=bot[roomowner].lobby.standard.mapvalues[this.map[0]];
-    		//prep
-    		int[][] mobtemp=bot[roomowner].lobby.standard.moblist(this.map[0]);
-    		Map<Integer, Integer> rspawn=bot[roomowner].lobby.standard.rebirthspawn;
-    		int[] mobwork=mobtemp[0].clone();
-    		for (int i = 0; i<mobwork.length; i++)
-    			if(rspawn.containsKey(mobwork[i]))
-    				mobwork[i] = rspawn.get(mobwork[i]);
-    		//prep end
-    		sectorclear=false;
-    		Moblist[0]=mobwork;
-    		Moblist[1]=mobtemp[1];
-    		Mobkilled=Moblist[0].clone();
+    		int mapId=this.map[0];
+    		refreshSectorMoblist(mapId);
     		timeover=bot[roomowner].executorp.schedule(TimeOver(this), MapValues[5], TimeUnit.MINUTES);
     	}
     	if (roommode!=2)
