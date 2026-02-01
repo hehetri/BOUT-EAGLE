@@ -117,6 +117,8 @@ public class Room {
     		this.map[0] = map;
     	this.map[1]=map;
     	MapPacket();
+    	if (this.roommode==2)
+    		refreshSectorMoblist();
     	//if (this.roommode==2)
     	//	event(1);
 	}
@@ -177,6 +179,23 @@ public class Room {
 			if(bot[i]!=null)
 				bot[i].send(packet,true);
 		packet.clean();
+	}
+
+	private void refreshSectorMoblist()
+	{
+		MapValues=bot[roomowner].lobby.standard.mapvalues[this.map[0]];
+		//prep
+		int[][] mobtemp=bot[roomowner].lobby.standard.moblist(this.map[0]);
+		Map<Integer, Integer> rspawn=bot[roomowner].lobby.standard.rebirthspawn;
+		int[] mobwork=mobtemp[0].clone();
+		for (int i = 0; i<mobwork.length; i++)
+			if(rspawn.containsKey(mobwork[i]))
+				mobwork[i] = rspawn.get(mobwork[i]);
+		//prep end
+		sectorclear=false;
+		Moblist[0]=mobwork;
+		Moblist[1]=mobtemp[1];
+		Mobkilled=Moblist[0].clone();
 	}
 	
 	public int GhostRoomCheck()
@@ -966,19 +985,7 @@ public class Room {
     		return;
     	}
     	if (roommode==2){
-    		MapValues=bot[roomowner].lobby.standard.mapvalues[this.map[0]];
-    		//prep
-    		int[][] mobtemp=bot[roomowner].lobby.standard.moblist(this.map[0]);
-    		Map<Integer, Integer> rspawn=bot[roomowner].lobby.standard.rebirthspawn;
-    		int[] mobwork=mobtemp[0].clone();
-    		for (int i = 0; i<mobwork.length; i++)
-    			if(rspawn.containsKey(mobwork[i]))
-    				mobwork[i] = rspawn.get(mobwork[i]);
-    		//prep end
-    		sectorclear=false;
-    		Moblist[0]=mobwork;
-    		Moblist[1]=mobtemp[1];
-    		Mobkilled=Moblist[0].clone();
+    		refreshSectorMoblist();
     		timeover=bot[roomowner].executorp.schedule(TimeOver(this), MapValues[5], TimeUnit.MINUTES);
     	}
     	if (roommode!=2)
