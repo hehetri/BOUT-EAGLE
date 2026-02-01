@@ -7,6 +7,7 @@ import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
 public class Room {
+	private static final int SECTOR_MOBLIST_OFFSET = 3;
 	protected BotClass[] bot = new BotClass[8];
 	protected int[] port = new int[8];
 	protected boolean[] closedslot = new boolean[8];
@@ -185,9 +186,12 @@ public class Room {
 	private void refreshSectorMoblist(int mapId)
 	{
 		this.map[0]=mapId;
-		MapValues=bot[roomowner].lobby.standard.mapvalues[mapId];
+		int moblistIndex = mapId;
+		if (roommode==2)
+			moblistIndex = mapId + SECTOR_MOBLIST_OFFSET;
+		MapValues=bot[roomowner].lobby.standard.mapvalues[moblistIndex];
 		//prep
-		int[][] mobtemp=bot[roomowner].lobby.standard.moblist(mapId);
+		int[][] mobtemp=bot[roomowner].lobby.standard.moblist(moblistIndex);
 		Map<Integer, Integer> rspawn=bot[roomowner].lobby.standard.rebirthspawn;
 		int[] mobwork=mobtemp[0].clone();
 		for (int i = 0; i<mobwork.length; i++)
