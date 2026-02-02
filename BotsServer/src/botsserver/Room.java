@@ -185,6 +185,8 @@ public class Room {
 	private void refreshSectorMoblist(int mapId)
 	{
 		this.map[0]=mapId;
+		int moblistIndex = mapId;
+		debug("sector mapId="+mapId+" moblistIndex="+moblistIndex);
 		MapValues=bot[roomowner].lobby.standard.mapvalues[mapId];
 		//prep
 		int[][] mobtemp=bot[roomowner].lobby.standard.moblist(mapId);
