@@ -33,7 +33,8 @@ public class ChannelServerConnection extends Thread{
     
     private void debug(String msg)
     {
-    	Main.debug("ChannelServer[11002]"+msg);
+    	String portLabel = server != null ? Integer.toString(server.port) : "unknown";
+    	Main.debug("ChannelServer[" + portLabel + "] " + msg);
     }
     
     protected int isbanned(String account)
@@ -771,6 +772,8 @@ public class ChannelServerConnection extends Thread{
             for (int i = 0; i < 4; i++)
             {
                 codePoint = this.socketIn.read();
+                if (codePoint < 0)
+                    return null;
                 buffer.put((byte)codePoint);//(byte)Main.decrypt[codePoint & 0xFF]);
             }
             int plen = bytetoint(buffer.array(), 2);
@@ -785,12 +788,16 @@ public class ChannelServerConnection extends Thread{
                 for (int i = 0; i < plen; i++)
                 {
                     codePoint = this.socketIn.read();
+                    if (codePoint < 0)
+                        return null;
                     buffer.put((byte)codePoint);//(byte)Main.decrypt[codePoint & 0xFF]);
                 }
             }
         } catch (Exception e)
         {
-            debug("Error (read): " + e);
+            if (socket == null || !socket.isClosed()) {
+                debug("Error (read): " + e);
+            }
             return null;
         }
 		return buffer.array();
@@ -819,17 +826,18 @@ public class ChannelServerConnection extends Thread{
     protected void closecon()
     {
     	try{
-    		if (bot.finalize)
+    		if (bot == null || bot.finalize)
     			return;
     		bot.finalize=true;
 	    	if (bot.room!=null && bot.room.Exit(bot.roomnum, false))
 	        	bot.RemoveRoom(bot.room);
 	    	bot.room=null;
 	    }catch (Exception e){debug("Error occured while removing user from room: "+e);}
-    	try{
-		    bot.closeThread();
-		    bot=null;
-		    server=null;
+	    try{
+		    if (bot != null) {
+		    	bot.closeThread();
+		    	bot=null;
+		    }
 		    sql=null;
     	}catch (Exception e){debug("Error while freeing resources: "+e);}
 	    try {

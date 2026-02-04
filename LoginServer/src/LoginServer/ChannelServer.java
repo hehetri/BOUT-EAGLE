@@ -4,6 +4,7 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.sql.ResultSet;
+import java.util.Arrays;
 
 class ChannelServer {
 	
@@ -18,6 +19,7 @@ class ChannelServer {
 			(byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00,
 			(byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00 };
 	public static final byte[] NULLBYTE = { (byte) 0x00 };
+public static final int CHANNEL_PORT = 11102;
 
 	public static String[] channel_detail = new String[12];
 	public static int[] channel_id = new int[12];
@@ -38,13 +40,16 @@ class ChannelServer {
 	protected static void getChannels(int channelnum) {
 
 		try {
-			ResultSet rs = Main.sql.doquery("SELECT * FROM bout_channels WHERE status=1 and server='"+channelnum+"' LIMIT 12");
-			if (channel_i != 1) {
-				channel_i = 0;
-			}
+			ResultSet rs = Main.sql.doquery("SELECT * FROM bout_channels WHERE status=1 and server='"
+					+ channelnum + "' LIMIT 12");
+			boolean found = false;
+			channel_i = 0;
+			Arrays.fill(channel_detail, null);
+			Arrays.fill(channel_ip, null);
 			String nullbyte = new String(NULLBYTE, "ISO8859-1");
 
 			while (rs.next()) {
+				found = true;
 				channel_id[channel_i] = rs.getInt("id");
 				channel_name[channel_i] = rs.getString("name");
 				channel_ip[channel_i] = rs.getString("channelip");
@@ -69,6 +74,41 @@ class ChannelServer {
 					channel_detail[channel_i] += nullbyte;
 
 				channel_i++;
+			}
+			rs.close();
+
+			if (!found) {
+				channel_i = 0;
+				Arrays.fill(channel_detail, null);
+				Arrays.fill(channel_ip, null);
+				rs = Main.sql.doquery("SELECT * FROM bout_channels WHERE status=1 LIMIT 12");
+				while (rs.next()) {
+					channel_id[channel_i] = rs.getInt("id");
+					channel_name[channel_i] = rs.getString("name");
+					channel_ip[channel_i] = rs.getString("channelip");
+					channel_namelength[channel_i] = channel_name[channel_i].length();
+
+					channel_min[channel_i] = rs.getInt("minlevel");
+					byte[] MINBYTE = { (byte) channel_min[channel_i] };
+
+					channel_max[channel_i] = rs.getInt("maxlevel");
+					byte[] MAXBYTE = { (byte) channel_max[channel_i] };
+
+					channel_players[channel_i] = rs.getInt("players");
+					int b1 = channel_players[channel_i] & 0xff;
+					int b2 = (channel_players[channel_i] >> 8) & 0xff;
+					byte[] PLAYERSBYTE = { (byte) b1, (byte) b2 };
+					channel_detail[channel_i] = new String(PLAYERSBYTE, "ISO8859-1")
+							+ new String(MINBYTE, "ISO8859-1")
+							+ new String(MAXBYTE, "ISO8859-1")
+							+ channel_name[channel_i];
+
+					for (int i = 0; i < 22 - channel_namelength[channel_i]; i++)
+						channel_detail[channel_i] += nullbyte;
+
+					channel_i++;
+				}
+				rs.close();
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -107,7 +147,7 @@ class ChannelServer {
 				for (int i = 0; i < 4; i++)
 					if(channel_ip[i]!=null){
 						String[] aip=channel_ip[i].split("\\.");
-						byte[] bitarr={(byte) 0x00, (byte) 0x00,(byte) Integer.parseInt(aip[0]), (byte) Integer.parseInt(aip[1]), (byte) Integer.parseInt(aip[2]), (byte) Integer.parseInt(aip[3])};
+						byte[] bitarr={(byte) (CHANNEL_PORT & 0xFF), (byte) ((CHANNEL_PORT >> 8) & 0xFF),(byte) Integer.parseInt(aip[0]), (byte) Integer.parseInt(aip[1]), (byte) Integer.parseInt(aip[2]), (byte) Integer.parseInt(aip[3])};
 						channel_packet += new String(bitarr, "ISO8859-1");
 					}
 					else

@@ -134,7 +134,7 @@ public class BotClass {
         		}
         	}
         	rs.close();
-        }catch (Exception e){debug("11004: "+e);}
+        }catch (Exception e){debug("11104: "+e);}
         lobbynum=num;
         arr = new String[]{""+num, channel.Channelname, account};
         sql.psupdate("UPDATE `lobbylist` SET `num`=?, Channel=? WHERE `username`=?", arr);
@@ -380,7 +380,12 @@ public class BotClass {
     		try{
     			if(rs.next()){
     				muted=rs.getInt("muted");
-    				mutedate=rs.getTimestamp("muteStime").getTime();
+    				java.sql.Timestamp muteStamp = rs.getTimestamp("muteStime");
+    				if (muteStamp != null) {
+    					mutedate=muteStamp.getTime();
+    				} else {
+    					mutedate=System.currentTimeMillis();
+    				}
     			}
     			rs.close();
     		}catch (Exception e){}
@@ -391,7 +396,7 @@ public class BotClass {
 			Long totTime = (endTime-mutedate);
 			int secs=(int)TimeUnit.MILLISECONDS.toSeconds(totTime);
 			if (secs>muted)
-				sql.psupdate("UPDATE `bout_characters` SET `muted`=0, `muteStime`=NULL WHERE `name`=?", new String[]{botname});
+				sql.psupdate("UPDATE `bout_characters` SET `muted`=0, `muteStime`=now() WHERE `name`=?", new String[]{botname});
         }
         return muted;
     }
