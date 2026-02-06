@@ -154,8 +154,21 @@ public class ChannelServerConnection extends Thread{
             		int nameEnd = body.indexOf("]");
             		if (nameEnd != -1 && nameEnd+1 < body.length())
             			body = body.substring(nameEnd+1).trim();
-            		if (body.startsWith("@"))
+            		if (body.startsWith(bot.botname + ":"))
+            			body = body.substring(bot.botname.length() + 1).trim();
+            		boolean handledCommand = false;
+            		if (body.startsWith("@")) {
             			lobby.standard.ParseCommands(bot, new String[]{body.substring(1)});
+            			handledCommand = true;
+            		} else {
+            			int atIndex = body.indexOf("@");
+            			if (atIndex != -1 && atIndex <= bot.botname.length() + 2) {
+            				lobby.standard.ParseCommands(bot, new String[]{body.substring(atIndex + 1).trim()});
+            				handledCommand = true;
+            			}
+            		}
+            		if (handledCommand)
+            			break;
             		else if (guild)
             			bot.sendGuildMsg("["+bot.botname+"]"+msg.substring(2+bot.botname.length()));
             		else
