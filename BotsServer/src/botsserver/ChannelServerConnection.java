@@ -150,12 +150,14 @@ public class ChannelServerConnection extends Thread{
                 	@SuppressWarnings("unused")int length=pack.getInt(2);
                     boolean guild = pack.getInt(2)==5;
                     String msg = pack.getString(0, pack.getLen(), false);
+            		debug("room chat raw: '"+msg+"'");
             		String body = msg.trim();
             		int nameEnd = body.indexOf("]");
             		if (nameEnd != -1 && nameEnd+1 < body.length())
             			body = body.substring(nameEnd+1).trim();
             		if (body.startsWith(bot.botname + ":"))
             			body = body.substring(bot.botname.length() + 1).trim();
+            		debug("room chat body: '"+body+"'");
             		boolean handledCommand = false;
             		if (body.startsWith("@")) {
             			lobby.standard.ParseCommands(bot, new String[]{body.substring(1)});
