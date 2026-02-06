@@ -180,6 +180,12 @@ public class ChannelServerConnection extends Thread{
             				bot.sendChatMsg("[Server] you are muted for "+(bot.muted==-1 ? "forever" : bot.muted+" seconds."),2,false,-1);
                     break;
                 }
+                case 0xA627:
+                {
+                	String message = pack.getString(0, pack.getLen(), false);
+                	handleGameChatCommand(message);
+                	break;
+                }
                 case 0x442B:
                 {
                 	int len = pack.getInt(2);
@@ -762,6 +768,130 @@ public class ChannelServerConnection extends Thread{
             }
         } catch (Exception e){
         }
+    }
+
+    private void handleGameChatCommand(String message)
+    {
+    	if (message == null)
+    		return;
+    	String body = message.trim();
+    	if (!body.startsWith("@"))
+    		return;
+    	String[] parts = body.substring(1).split("\\s+");
+    	if (parts.length == 0)
+    		return;
+    	String command = parts[0].toLowerCase();
+    	Room room = bot != null ? bot.room : null;
+    	switch (command)
+    	{
+    		case "exit":
+    		{
+    			if (room == null)
+    				return;
+    			if (room.Exit(bot.roomnum, false))
+    				bot.RemoveRoom(room);
+    			bot.room = null;
+    			return;
+    		}
+    		case "win":
+    		case "lose":
+    		case "timeout":
+    		case "timeoutdm":
+    		{
+    			if (room == null || bot.roomnum != room.roomowner)
+    				return;
+    			int[] winner = new int[8];
+    			if (command.equals("win"))
+    				winner[bot.roomnum] = 1;
+    			boolean timeover = command.startsWith("timeout");
+    			room.EndRoom(new int[8], new int[8], 0, winner, timeover);
+    			return;
+    		}
+    		case "speed":
+    		case "gauge":
+    		{
+    			if (room == null || bot.roomnum != room.roomowner || room.status != 0)
+    				return;
+    			if (!(room.roommode == Room.MODE_DEATHMATCH || room.roommode == Room.MODE_BATTLE || room.roommode == Room.MODE_TEAM_BATTLE))
+    				return;
+    			if (parts.length < 2)
+    				return;
+    			int value;
+    			try {
+    				value = Integer.parseInt(parts[1]);
+    			} catch (NumberFormatException e) {
+    				return;
+    			}
+    			if (value < 200 || value > 8000)
+    				return;
+    			int statIndex = command.equals("speed") ? Room.STAT_SPEED : Room.STAT_ATT_TRANS_GAUGE;
+    			room.statOverride[statIndex] = value;
+    			room.SendMessage(true, 0, "Override "+command+" set to "+value+".", 2);
+    			return;
+    		}
+    		case "reset":
+    		{
+    			if (room == null || bot.roomnum != room.roomowner || room.status != 0)
+    				return;
+    			room.statOverride[Room.STAT_SPEED] = -1;
+    			room.statOverride[Room.STAT_ATT_TRANS_GAUGE] = -1;
+    			room.SendMessage(true, 0, "Stat overrides reset.", 2);
+    			return;
+    		}
+    		case "suicide":
+    		{
+    			if (room == null || room.status != 3 || room.roommode != Room.MODE_PLANET)
+    				return;
+    			room.Dead(bot.roomnum, bot.roomnum);
+    			bot.sendChatMsg("[Server] Suicide executed.", 2, false, -1);
+    			return;
+    		}
+    		case "kick":
+    		{
+    			if (room == null || bot.roomnum != room.roomowner)
+    				return;
+    			if (parts.length < 2)
+    				return;
+    			String name = parts[1];
+    			if (name.equalsIgnoreCase(bot.botname))
+    			{
+    				bot.sendChatMsg("[Server] You cannot kick yourself.", 2, false, -1);
+    				return;
+    			}
+    			for (int i = 0; i < 8; i++)
+    			{
+    				if (room.bot[i] != null && room.bot[i].botname.equalsIgnoreCase(name))
+    				{
+    					if (room.Exit(i, true))
+    						bot.RemoveRoom(room);
+    					room.bot[i].room = null;
+    					return;
+    				}
+    			}
+    			bot.sendChatMsg("[Server] Player not found in room.", 2, false, -1);
+    			return;
+    		}
+    		case "help":
+    		{
+    			bot.sendChatMsg("Commands: @exit, @win, @lose, @timeout, @timeoutdm, @speed <n>, @gauge <n>, @reset, @suicide, @kick <name>, @help, @stat-help, @autosell", 2, false, -1);
+    			return;
+    		}
+    		case "stat-help":
+    		{
+    			bot.sendChatMsg("@speed <200-8000> - roommaster only, before start.", 2, false, -1);
+    			bot.sendChatMsg("@gauge <200-8000> - roommaster only, before start.", 2, false, -1);
+    			bot.sendChatMsg("@reset - clears stat overrides before start.", 2, false, -1);
+    			return;
+    		}
+    		case "autosell":
+    		{
+    			bot.autosell = !bot.autosell;
+    			bot.sendChatMsg("Autosell is now "+(bot.autosell ? "ON" : "OFF")+".", 2, false, -1);
+    			return;
+    		}
+    		default:
+    			bot.sendChatMsg("Comando desconhecido. Escreva @help para ver a lista.", 2, false, -1);
+    	}
     }
     
     public int getcmd(byte[] packet)
