@@ -7,12 +7,12 @@ import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
 public class Room {
-	public static final int MODE_DEATHMATCH = 0;
+	public static final int MODE_BATTLE = 0;
 	public static final int MODE_TEAM_BATTLE = 1;
 	public static final int MODE_PLANET = 2;
-	public static final int MODE_BATTLE = 3;
-	public static final int STAT_SPEED = 0;
-	public static final int STAT_ATT_TRANS_GAUGE = 1;
+	public static final int MODE_DEATHMATCH = 3;
+	public static final int STAT_SPEED = 1;
+	public static final int STAT_ATT_TRANS_GAUGE = 2;
 	protected BotClass[] bot = new BotClass[8];
 	protected int[] port = new int[8];
 	protected boolean[] closedslot = new boolean[8];
@@ -44,7 +44,7 @@ public class Room {
 	//protected int[][] rspawn = null;
 	protected int[] Mobkilled = {};
 	protected int moblistMap = -1;
-	protected int[] statOverride = new int[]{-1, -1};
+	protected int[] statOverride = new int[]{-1, -1, -1};
 	protected Packet packet = new Packet();
 	protected ScheduledFuture<?> clearstage = null;
 	protected ScheduledFuture<?> timeover = null;
