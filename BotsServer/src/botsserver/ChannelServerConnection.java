@@ -150,8 +150,27 @@ public class ChannelServerConnection extends Thread{
                 	@SuppressWarnings("unused")int length=pack.getInt(2);
                     boolean guild = pack.getInt(2)==5;
                     String msg = pack.getString(0, pack.getLen(), false);
-            		if ((""+msg.charAt(3+bot.botname.length())).equals("@"))
-            			lobby.standard.ParseCommands(bot, new String[]{msg.substring((4+bot.botname.length()), msg.length())});
+            		debug("room chat raw: '"+msg+"'");
+            		String body = msg.trim();
+            		int nameEnd = body.indexOf("]");
+            		if (nameEnd != -1 && nameEnd+1 < body.length())
+            			body = body.substring(nameEnd+1).trim();
+            		if (body.startsWith(bot.botname + ":"))
+            			body = body.substring(bot.botname.length() + 1).trim();
+            		debug("room chat body: '"+body+"'");
+            		boolean handledCommand = false;
+            		if (body.startsWith("@")) {
+            			lobby.standard.ParseCommands(bot, new String[]{body.substring(1)});
+            			handledCommand = true;
+            		} else {
+            			int atIndex = body.indexOf("@");
+            			if (atIndex != -1 && atIndex <= bot.botname.length() + 2) {
+            				lobby.standard.ParseCommands(bot, new String[]{body.substring(atIndex + 1).trim()});
+            				handledCommand = true;
+            			}
+            		}
+            		if (handledCommand)
+            			break;
             		else if (guild)
             			bot.sendGuildMsg("["+bot.botname+"]"+msg.substring(2+bot.botname.length()));
             		else
@@ -160,6 +179,12 @@ public class ChannelServerConnection extends Thread{
             			else
             				bot.sendChatMsg("[Server] you are muted for "+(bot.muted==-1 ? "forever" : bot.muted+" seconds."),2,false,-1);
                     break;
+                }
+                case 0xA627:
+                {
+                	String message = pack.getString(0, pack.getLen(), false);
+                	handleGameChatCommand(message);
+                	break;
                 }
                 case 0x442B:
                 {
@@ -743,6 +768,156 @@ public class ChannelServerConnection extends Thread{
             }
         } catch (Exception e){
         }
+    }
+
+    private void handleGameChatCommand(String message)
+    {
+        if (message == null)
+            return;
+        String body = message.trim();
+        if (!body.startsWith("@"))
+            return;
+        String[] parts = body.substring(1).split("\\s+", 2);
+        if (parts.length == 0)
+            return;
+        String command = parts[0].toLowerCase();
+        String arg = parts.length > 1 ? parts[1].trim() : "";
+        Room room = bot != null ? bot.room : null;
+        switch (command)
+        {
+            case "exit":
+    		{
+    			if (room == null)
+    				return;
+    			if (room.Exit(bot.roomnum, false))
+    				bot.RemoveRoom(room);
+    			bot.room = null;
+    			return;
+    		}
+            case "win":
+            case "lose":
+            case "timeout":
+            case "timeoutdm":
+            {
+                if (room == null || bot.roomnum != room.roomowner)
+                    return;
+                int[] winner = new int[8];
+                if (command.equals("win"))
+                    winner[bot.roomnum] = 1;
+                boolean timeover = command.startsWith("timeout");
+                room.EndRoom(new int[8], new int[8], 0, winner, timeover);
+                return;
+            }
+            case "speed":
+            case "gauge":
+            {
+                if (room == null || bot.roomnum != room.roomowner) {
+                	bot.sendChatMsg("Solo los maestros de la sala pueden cambiar las estadísticas", 2, false, -1);
+                    return;
+                }
+                if (!(room.roommode == Room.MODE_DEATHMATCH || room.roommode == Room.MODE_BATTLE || room.roommode == Room.MODE_TEAM_BATTLE))
+                {
+                	bot.sendChatMsg("Solo disponible en Deathmatch/Battle/Team Battle", 2, false, -1);
+                	return;
+                }
+                if (room.status != 0) {
+                	bot.sendChatMsg("No se puede cambiar después de iniciar la partida", 2, false, -1);
+                	return;
+                }
+                Integer value = parseRange(arg, 200, 8000);
+                if (value == null) {
+                	bot.sendChatMsg("Argumento inválido. Use @speed/@gauge <200-8000>", 2, false, -1);
+                	return;
+                }
+                int statIndex = command.equals("speed") ? Room.STAT_SPEED : Room.STAT_ATT_TRANS_GAUGE;
+                room.statOverride[statIndex] = value;
+                room.SendMessage(true, 0, bot.botname+" cambió "+command+" a "+value, 3);
+                return;
+            }
+            case "reset":
+            {
+                if (room == null || bot.roomnum != room.roomowner) {
+                	bot.sendChatMsg("Solo los maestros de la sala pueden cambiar las estadísticas", 2, false, -1);
+                	return;
+                }
+                if (room.status != 0) {
+                	bot.sendChatMsg("No se puede cambiar después de iniciar la partida", 2, false, -1);
+                	return;
+                }
+                room.statOverride[Room.STAT_SPEED] = -1;
+                room.statOverride[Room.STAT_ATT_TRANS_GAUGE] = -1;
+                room.SendMessage(true, 0, bot.botname+" restableció todas las estadísticas", 3);
+                return;
+            }
+            case "suicide":
+            {
+                if (room == null || room.status != 3 || room.roommode != Room.MODE_PLANET)
+                    return;
+                room.Dead(bot.roomnum, bot.roomnum);
+                bot.sendChatMsg("Has matado a tu personaje", 2, false, -1);
+                return;
+            }
+            case "kick":
+            {
+                if (room == null || bot.roomnum != room.roomowner) {
+                	bot.sendChatMsg("Solo los maestros de la sala pueden expulsar jugadores", 2, false, -1);
+                	return;
+                }
+                if (arg.isEmpty())
+                	return;
+                String name = arg;
+                if (name.equalsIgnoreCase(bot.botname))
+                {
+                    bot.sendChatMsg("No puedes expulsarte a ti mismo", 2, false, -1);
+                    return;
+                }
+                for (int i = 0; i < 8; i++)
+                {
+                    if (room.bot[i] != null && room.bot[i].botname.equalsIgnoreCase(name))
+    				{
+    					if (room.Exit(i, true))
+    						bot.RemoveRoom(room);
+    					room.bot[i].room = null;
+                        return;
+                    }
+                }
+                bot.sendChatMsg("Jugador no encontrado: " + name, 2, false, -1);
+                return;
+            }
+            case "help":
+            {
+                bot.sendChatMsg("@help - Lista de comandos", 2, false, -1);
+                bot.sendChatMsg("@exit, @win, @lose, @timeout, @timeoutdm", 2, false, -1);
+                bot.sendChatMsg("@speed <n>, @gauge <n>, @reset", 2, false, -1);
+                bot.sendChatMsg("@kick <nombre>, @suicide, @autosell", 2, false, -1);
+                return;
+            }
+            case "stat-help":
+            {
+                bot.sendChatMsg("@speed <n> cambia velocidad", 2, false, -1);
+                bot.sendChatMsg("@gauge <n> cambia barra", 2, false, -1);
+                bot.sendChatMsg("@reset restablece stats", 2, false, -1);
+                return;
+            }
+            case "autosell":
+            {
+                bot.autosell = !bot.autosell;
+                bot.sendChatMsg("Autosell "+(bot.autosell ? "activado" : "desactivado"), 2, false, -1);
+                return;
+            }
+            default:
+                bot.sendChatMsg("Comando desconocido. Usa @help", 2, false, -1);
+        }
+    }
+
+    private Integer parseRange(String value, int min, int max)
+    {
+    	try {
+    		int number = Integer.parseInt(value);
+    		return number >= min && number <= max ? number : null;
+    	} catch (NumberFormatException ex) {
+    		return null;
+    	}
     }
     
     public int getcmd(byte[] packet)

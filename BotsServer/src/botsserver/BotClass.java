@@ -92,6 +92,7 @@ public class BotClass {
 	protected int[] Giftkind = new int[18];
 	protected boolean announce = false;
 	protected boolean statboost = false;
+	protected boolean autosell = false;
 	protected String[] chathistory = new String[10];
 	private Long lastmsg = System.currentTimeMillis();
     private int msgcount = 0;
